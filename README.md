@@ -8,4 +8,5 @@ Devs:
   Create a .env file in root of document with your new york times article api key and mlab uri
   
   MONGODB_URI = xxxxxxxxxxxxx
+  
   NYT_API_KEY = xxxxxxxxxxxxx
