@@ -5,7 +5,7 @@ import './app.css';
 class App extends Component {
   render() {
     return (
-      <div>
+      <div className="globe">
         <Globe />
         <div className="content">
           <h3>Data Visualization</h3>
