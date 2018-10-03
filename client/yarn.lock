@@ -2,6 +2,10 @@
 # yarn lockfile v1
 
 
+"@types/three@^0.92.23":
+  version "0.92.23"
+  resolved "https://registry.yarnpkg.com/@types/three/-/three-0.92.23.tgz#3d2a2078f2eb22f8e064be80a035dfd8359909c1"
+
 abab@^1.0.3:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/abab/-/abab-1.0.4.tgz#5faad9c2c07f60dd76770f71cf025b62a63cfd4e"
@@ -6493,9 +6497,19 @@ text-table@0.2.0, text-table@~0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/text-table/-/text-table-0.2.0.tgz#7f5ee823ae805207c00af2df4a84ec3fcfa570b4"
 
+three-addons@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/three-addons/-/three-addons-1.2.0.tgz#a36293e2489bdda08be8efc31291485b41de1560"
+  dependencies:
+    three "^0.92.0"
+
 three-orbit-controls@^82.1.0:
   version "82.1.0"
   resolved "https://registry.yarnpkg.com/three-orbit-controls/-/three-orbit-controls-82.1.0.tgz#11a7f33d0a20ecec98f098b37780f6537374fab4"
+
+three@^0.92.0:
+  version "0.92.0"
+  resolved "https://registry.yarnpkg.com/three/-/three-0.92.0.tgz#8d3d1f5af890e62da7f4cb45d20c09fa51057dcd"
 
 three@^0.97.0:
   version "0.97.0"
