@@ -8,13 +8,13 @@ var OrbitControls = require('three-orbit-controls')(THREE)
 
 
 class Globe extends Component {
-
+  
    constructor(props) {
     super(props)
-
-    this.start = this.start.bind(this)
-    this.stop = this.stop.bind(this)
-    this.animate = this.animate.bind(this)
+	
+    this.start = this.start.bind(this);
+    this.stop = this.stop.bind(this);
+    this.animate = this.animate.bind(this);
     
   }
 
@@ -33,8 +33,8 @@ class Globe extends Component {
 
     loadRockets();
     
-    const width = window.innerWidth
-    const height = window.innerHeight
+    const width = window.innerWidth - 17;
+    const height = window.innerHeight;
     const img = 'https://www.eleusal.com/html5GlobeFiles/textures/land_ocean_ice_cloud_2048.jpg'
 
     const scene = new THREE.Scene()
@@ -58,7 +58,7 @@ class Globe extends Component {
 
     camera.position.z = 13;
     scene.add(sphere);
-    renderer.setClearColor('#2e2e2e');
+    renderer.setClearColor('#191a1f');
     // renderer.setSize(width, height);
 
     this.scene = scene
@@ -136,7 +136,7 @@ class Globe extends Component {
     OrbitControls = new OrbitControls(this.camera, this.renderer.domElement);
 
     window.addEventListener('resize', () => {
-        const width = window.innerWidth;
+        const width = window.innerWidth - 17;
         const height = window.innerHeight;
         renderer.setSize(width, height);
         camera.aspect = width / height;
@@ -177,7 +177,7 @@ class Globe extends Component {
   render() {
     return (
       <div
-        style={{ width: '100%', height: '100%' }}
+        className={this.props.panelShown ? "globeDiv globeDiv__panelShown" : "globeDiv"}
         ref={(mount) => { this.mount = mount }}
       />
     )
