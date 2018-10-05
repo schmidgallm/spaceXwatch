@@ -46,6 +46,15 @@ module.exports = {
             res.json(data);
 
         });
-    }
+    },
 
+    getRockets: (req, res) => {
+        request.get({
+            url: "https://api.spacexdata.com/v3/launches",
+        }, function (err, response, body) {
+            res.json(response);
+        });
+    },
+
+  
 }
