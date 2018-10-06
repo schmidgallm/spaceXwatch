@@ -21,16 +21,16 @@ class Globe extends Component {
   componentDidMount() {
 
     const loadRockets = () => {
-      API.getRockets()
+      console.log('load rockets called');
+      API.getLaunches()
         .then( res => {
-          const launches = res.data;
-          console.log(launches);
+          console.log("response recieved");
+          console.log(res);
         })
         .catch( err => {
-          console.log(err);
+          console.log('Err API GET LAUNCHES : ' ,err);
         })
     }
-
     loadRockets();
     
     const width = window.innerWidth - 17;
