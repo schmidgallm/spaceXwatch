@@ -75,40 +75,46 @@ class Globe extends Component {
     loader.load( 'https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', function ( font ) {
     //build/NanumGothic_Regular.json
     //https://threejs.org/examples/fonts/helvetiker_regular.typeface.json
-        for ( var j = 0; j < gps.length; j ++ ) {
-            //console.log(gps[j].name_k);
-            var material = new THREE.LineBasicMaterial({ color: gps[j].color });
+        for ( var j = 0; j < gps.length; j ++ ) {  
+          
+            var material = new THREE.LineBasicMaterial({ 
+              color: gps[j].color,
+              linewidth: 500
+            });
             var geometry = new THREE.Geometry();
             geometry.vertices.push(new THREE.Vector3(0, 0, 0));
-            geometry.vertices.push(new THREE.Vector3(7, 0, 0));
+            geometry.vertices.push(new THREE.Vector3(8, 0, 0));
             var line = new THREE.Line(geometry, material);
     
             line.rotation.z =THREE.Math.degToRad( gps[j].latitude );
             line.rotation.y =THREE.Math.degToRad( gps[j].longitude );
             scene.add(line); 
-    
-            // let xMid;
+            
+            /*
+            OPTIONAL TEXT WITH LINE THAT WILL WRITE name_e AT END OF LINE:
+
+            let xMid;
             var text;
             var textShape = new THREE.BufferGeometry();
             var color = gps[j].color;
-            //var matDark = new THREE.LineBasicMaterial( {
-            //color: color,
-            //side: THREE.DoubleSide
-            //} );
+            var matDark = new THREE.LineBasicMaterial( {
+            color: color,
+            side: THREE.DoubleSide
+            } );
             var matLite = new THREE.MeshBasicMaterial( {
             color: color,
             transparent: true,
             opacity: 0.7,
             side: THREE.DoubleSide
             } );
-            //var message = "";
-            
+
+            var message = "";
             var shapes = font.generateShapes( gps[j].name_e, 0.2, 2 );
             var geometryTwo = new THREE.ShapeGeometry( shapes );
             geometryTwo.computeBoundingBox();
-            // xMid = -0.5 * ( geometryTwo.boundingBox.max.x - geometryTwo.boundingBox.min.x );
-            //geometry.translate( xMid, 0, 0 );
-            // make shape ( N.B. edge view not visible )
+            xMid = -0.5 * ( geometryTwo.boundingBox.max.x - geometryTwo.boundingBox.min.x );
+            geometry.translate( xMid, 0, 0 );
+            make shape ( N.B. edge view not visible )
             textShape.fromGeometry( geometryTwo );
             text = new THREE.Mesh( textShape, matLite );
             
@@ -124,8 +130,7 @@ class Globe extends Component {
             text.position.z = ab.z;
     
             scene.add( text );	
-            
-            
+            */
         }
     })
 
