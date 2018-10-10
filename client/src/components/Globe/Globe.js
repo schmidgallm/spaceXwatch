@@ -45,7 +45,7 @@ class Globe extends Component {
       1000
     )
     camera.lookAt(new THREE.Vector3(0,0,0));
-    const renderer = new THREE.WebGLRenderer();
+    const renderer = new THREE.WebGLRenderer( { alpha: true } );
     renderer.setSize(width, height);
     const geometry = new THREE.SphereGeometry(5, 32, 32);
     const texture = new THREE.TextureLoader().load(img);
@@ -54,11 +54,11 @@ class Globe extends Component {
     // ]
     const material =  new THREE.MeshBasicMaterial({map: texture});
     const sphere = new THREE.Mesh(geometry, material);
+    //renderer.setClearColor(0xFFFFFF, 0);
     scene.add(sphere)
 
-    camera.position.z = 13;
+    camera.position.z = 11;
     scene.add(sphere);
-    renderer.setClearColor('#191a1f');
     // renderer.setSize(width, height);
 
     this.scene = scene
@@ -85,7 +85,7 @@ class Globe extends Component {
     
             line.rotation.z =THREE.Math.degToRad( gps[j].latitude );
             line.rotation.y =THREE.Math.degToRad( gps[j].longitude );
-            scene.add(line); 
+            //scene.add(line); 
     
             // let xMid;
             var text;
@@ -123,7 +123,7 @@ class Globe extends Component {
             text.position.y = ab.y;
             text.position.z = ab.z;
     
-            scene.add( text );	
+            //scene.add( text );	
             
             
         }
@@ -162,8 +162,8 @@ class Globe extends Component {
   }
 
   animate() {
-    this.sphere.rotation.x += 0.000
-    this.sphere.rotation.y += 0.00
+    this.sphere.rotation.x += 0.00
+    this.sphere.rotation.y += 0.001
 
     this.renderScene()
     this.frameId = window.requestAnimationFrame(this.animate)

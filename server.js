@@ -4,6 +4,7 @@ dotenv.config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const logger = require('morgan');
+const path = require('path');
 
 // Init App
 const app = express();
@@ -27,7 +28,7 @@ app.use(logger('dev'));
 
 // Init static assets
 if (process.env.NODE_ENV === 'production') {
-    app.use(express.static('client/build'));
+    app.use(express.static('./client/build'));
 }
 
 // Init DB
@@ -41,14 +42,20 @@ const db = require("./models");
 
 
 // Auth Routes
-var authRoute = require('./routes/auth-routes.js')(app,passport,express);	
+require('./routes/auth-routes.js')(app,passport,express);
+
 
 // Load passport strategies
 require('./config/passport/passport.js')(passport,db.user);
 
-// Import routes and give the server access to them.
-//require("./routes/api-routes.js")(app);
+//Import routes and give the server access to them.
+require("./routes/api-routes.js")(app);
 //require("./routes/html-routes.js")(app);
+
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "./client/build/index.html"));
+});
 
 
 // Start our server so that it can begin listening to client requests.

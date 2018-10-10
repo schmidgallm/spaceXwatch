@@ -48,6 +48,10 @@ module.exports = function(app,passport,express){
 		res.send(req.user);
 
 	});
+	
+	app.get('/himom', function (req, res) {
+		res.send("himom");
+	});
 
 
 	function isLoggedIn(req, res, next) {

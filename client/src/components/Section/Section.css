@@ -1,0 +1,173 @@
+.section_wrapper .divider
+{
+	position: relative;
+	height: 80vh;
+	background: rgb(25, 25, 30);
+	padding-top: 10vh;
+	padding-bottom: 10vh;
+	min-height: 600px;
+}
+
+.divider > div
+{
+	white-space: nowrap;
+}
+
+.section_wrapper .divider:nth-child(even)
+{
+	/*background: linear-gradient(135deg, #25293d 0%,#000000 100%);*/
+}
+
+.section_wrapper .divider:nth-child(2)
+{
+	padding-top: 20vh;
+}
+
+.section_wrapper .divider:nth-child(3)
+{
+	background-color: rgb(224, 226, 237);
+}
+
+.section_wrapper .divider:nth-child(3) .divider-text
+{
+	color: black;
+}
+
+.section_wrapper .divider:nth-child(4)
+{
+	background-color: transparent;
+}
+
+.divider-image
+{
+	display: inline-block;
+	vertical-align: top;
+	margin-left: 23%;
+	width: 450px;
+	height: 600px;
+}
+
+.divider-image img
+{
+	position: relative;
+	z-index: 15;
+	width: 100%;
+	height: 100%;
+}
+
+.divider-text
+{
+	position: relative;
+	display: inline-block;
+	vertical-align: top;
+	font-family: 'Work Sans', sans-serif;
+	color: white;
+	margin-left: 50px;
+	width: 200px;
+	height: 600px;
+	white-space: normal;
+}
+
+.divider-text h1
+{
+	position: absolute;
+	top: 50%;
+	left: 0px;
+	transform: translateY(-300%);
+	white-space: nowrap;
+}
+
+.divider-text h2
+{
+	position: absolute;
+	top: 38%;
+	left: 0px;
+	font-size: 48px;
+	width: 23vw;
+}
+
+.divider-flip-percent
+{
+	margin-left: calc(23vw - 140px);
+}
+
+.divider-flip-static
+{
+	margin-left: 23%;
+}
+
+@media screen and (max-width: 1073px)
+{
+	.divider-text h1
+	{
+		font-size: 1.5em;
+		transform: translateY(-350%);
+	}
+
+	.divider-text h2
+	{
+
+		font-size: 36px;
+	}
+	
+	.divider-image
+	{
+		margin-left: 80px;
+	}
+
+	.divider-flip-static
+	{
+		margin-left: 100px;
+	}
+
+}
+
+@media screen and (max-width: 900px)
+{
+	.divider > div
+	{
+		white-space: normal;
+	}
+	
+	.divider-text
+	{
+		display: block;
+		width: 80%;
+		height: 300px;
+		margin: 0 auto;
+	}
+	
+	.divider-text h2
+	{
+		width: 100%;
+	}
+	
+	.divider-image
+	{
+		display: block;
+		margin: 0 auto;
+		width: 80%;
+		height: max-content;
+	}
+	
+	.section_wrapper .divider
+	{
+		height: max-content;
+	}
+	
+	.divider-image img
+	{
+
+		width: 100%;
+		height: auto;
+		max-width: 450px;
+	}
+	
+	.footer-flexbox
+	{
+		flex-direction: column;
+		height: max-content !important;
+	}
+}
+
+
