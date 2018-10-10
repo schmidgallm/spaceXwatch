@@ -23,6 +23,14 @@ class App extends Component {
 	this.setState(state => ({ showLoginPanel: !state.showLoginPanel }));
   }
 
+  // listen for click on button and hide content text
+  hideText = () => {
+    const btn = document.getElementsByClassName('login-button');
+    btn.addEventListener('click', () => {
+      document.getElementById('content').style.display = 'none';
+    })
+  }
+
   componentDidMount(){
     setTimeout(() => {
       this.setState({
