@@ -29,6 +29,7 @@ class LoginPanel extends Component {
           console.log(err);
         })
 	}
+
 	
 	render() {
 		return (
@@ -37,8 +38,8 @@ class LoginPanel extends Component {
 					<div className="panel-title">
 						Login
 					</div>
-					<InputWrapper type="text" title="Username"/>
-					<InputWrapper type="password" title="Password"/>
+					<InputWrapper type="text" title="Username" cbInput={this.handleInputChange}/>
+					<InputWrapper type="password" title="Password" cbInput={this.handleInputChange}/>
 					<br />
 					<div className="panel-title">
 						Sign Up

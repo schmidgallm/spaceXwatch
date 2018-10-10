@@ -47,19 +47,18 @@ module.exports = function(sequelize, DataTypes) {
         len: [1]
       }
     }
-	  
-	  
+
+  });
+
+  Events.associate = function (models) {
+
+    Events.belongsTo(models.GeoDataSet, {
+      foreignKey: {
+        allowNull: false,
+      },
     });
-  
-    Events.associate = function(models) {
-		
-		Events.belongsTo(models.GeoDataSet, {
-			foreignKey: {
-			  allowNull: false,
-			},
-      });
-      
-    };
-  
-    return Events;
+
   };
+
+  return Events;
+};

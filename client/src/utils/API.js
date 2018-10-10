@@ -4,7 +4,7 @@ import axios from 'axios';
 // export all api calls
 export default {
 
-    getLaunches: () => {
+  getLaunches: () => {
         return axios.get('/spacex/data')
             
     },
@@ -20,5 +20,4 @@ export default {
 	addSpaceXData: () => {
 		return axios.get('/addspacexdata');
 	}
-
 }

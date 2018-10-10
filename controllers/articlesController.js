@@ -22,7 +22,7 @@ module.exports = {
                     desc: flight.details,
                     lat: 33.448376,
                     lon: -112.074036,
-					GeoDataSetId: 2
+					          GeoDataSetId: 2
                 })
 			});
             
