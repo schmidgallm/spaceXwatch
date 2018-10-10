@@ -140,6 +140,9 @@ class Globe extends Component {
             scene.add( text );	
             */
         }
+
+        // listen for click on each line
+        
     })
 
 
