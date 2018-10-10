@@ -7,54 +7,45 @@ const db = require('../models');
 // Define methods for the articles controller
 module.exports = {
 
-    // Find all articles and limit to 10 and sort from newest to oldest
-    findAll: (req, res) => {
-        db.Articles
-            .find()
-            .limit(10)
-            .sort({
-                published: -1
+    // retrieve spacex api data and post to db
+    postLaunches: (req, res) => {
+        request.get({
+            url: 'https://api.spacexdata.com/v3/launches'
+        }, (err, response, body) => {
+            const data = JSON.parse(body);
+            data.forEach( flight => {
+                db.Events.create({
+                    name: flight.mission_name,
+                    flightNumber: flight.flight_number,
+                    flightYear: flight.launch_year,
+                    image: flight.links.mission_patch,
+                    desc: flight.details,
+                    lat: 33.448376,
+                    lon: -112.074036,
+					GeoDataSetId: 2
+                })
+			});
+            
+			res.send("Added spaceX data to database");
+        })
+    },
+
+    getLaunches: (req, res) => {
+        db.Events.findAll({})
+            .then(dbLaunches => {
+                res.send(dbLaunches);
             })
-            .then(dbArticles => res.json(dbArticles))
-            .catch(err => res.state(422).json(err));
     },
-
-    postAll: (req, res) => {
-        // Get New York Times articles search for spaceX and Rocket
-        // Need to add rocket as param otherwise you get random data
-        request.get({
-            url: "https://api.nytimes.com/svc/search/v2/articlesearch.json",
-            qs: {
-                'api-key': "bd2c4617672b48ebb6d75459de9c1d1e",
-                'q': "spaceX, rocket",
-                'sort': "newest"
-            },
-        }, function (err, response, body) {
-
-            // needs to be parsed for proper response object
-            body = JSON.parse(body);
-            const data = body.response.docs;
-            // loop through articles and bring in relevent data to save to db
-            data.forEach(article => {
-                db.Articles.create({
-                    snippet: article.snippet,
-                    url: article.web_url,
-                    author: article.byline.original
-                });
-            });
-            // send json to 
-            res.json(data);
-
-        });
-    },
-
-    getRockets: (req, res) => {
-        request.get({
-            url: "https://api.spacexdata.com/v3/launches",
-        }, function (err, response, body) {
-            res.json(response);
-        });
-    },
+	
+	createGeoDataSet: (req, res) => {
+		db.GeoDataSet.create({
+			title: "SpaceX",
+			image: "https://media.cdn.gradconnection.com/uploads/7c6688fb-ac3a-4a2f-b480-0fda0745a583-SpaceX_Logo.jpg",
+			userId: "1"
+		});
+		
+		res.send("complete");
+	}
 
   
 }

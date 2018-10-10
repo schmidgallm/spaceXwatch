@@ -12,7 +12,7 @@ router.route('/')
 router.route('/nyt/spacex')
     .get(articlesController.postAll);
 
-router.route('spacex/data')
+router.route('/spacex/data')
     .get(articlesController.findAll);
 
 module.exports = router;

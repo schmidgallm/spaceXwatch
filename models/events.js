@@ -12,7 +12,11 @@ module.exports = function(sequelize, DataTypes) {
     flightNumber: {
       type: DataTypes.INTEGER,
       primaryKey: true,
-      allowNull: false
+      allowNull: false,
+	  unique: {
+		args: true,
+		msg: 'Event found in database'
+		}
     },
 
     flightYear: {
@@ -22,17 +26,10 @@ module.exports = function(sequelize, DataTypes) {
 
     image: {
       type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        len: [1]
-      }
     },
 
     desc: {
       type: DataTypes.STRING(2000),
-      validate: {
-        len: [1]
-      }
     },
 
     lat: {
