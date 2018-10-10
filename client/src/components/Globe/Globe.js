@@ -20,6 +20,10 @@ class Globe extends Component {
 
   componentDidMount() {
 
+    setTimeout(() => {
+      camera.position.z = 9;
+    },8000)
+
     const loadRockets = () => {
       API.getLaunches()
         .then( res => {
@@ -55,7 +59,7 @@ class Globe extends Component {
     const sphere = new THREE.Mesh(geometry, material);
     scene.add(sphere)
 
-    camera.position.z = 10;
+    camera.position.z = 13;
     scene.add(sphere);
     renderer.setClearColor('#191a1f');
     // renderer.setSize(width, height);
@@ -143,6 +147,9 @@ class Globe extends Component {
 
         // listen for click on each line
         
+        document.addEventListener('click', () => {
+          console.log('clicked');
+        })
     })
 
 
