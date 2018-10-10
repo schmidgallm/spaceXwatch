@@ -2,12 +2,21 @@ const path = require("path");
 
 module.exports = function(app,passport,express){
 
-	
+	/*
 	app.post('/signin', passport.authenticate('local-signin',  
 			 { successRedirect: '/',
 			   failureRedirect: '/signin'}
 			 ));
-			 
+*/
+/*
+	app.post('/signup', (req, res) => {
+		console.log(req.body);
+		res.send('sent')
+	})
+	*/
+	app.get('/signin', (req, res) => {
+		res.send('signin!!!')
+	})
 			
 	app.post('/signup', passport.authenticate('local-signup',  
 			 { successRedirect: '/', 
@@ -47,6 +56,10 @@ module.exports = function(app,passport,express){
 		//for testing
 		res.send(req.user);
 
+	});
+	
+	app.get('/himom', function (req, res) {
+		res.send("himom");
 	});
 
 

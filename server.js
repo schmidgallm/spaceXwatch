@@ -4,6 +4,7 @@ dotenv.config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const logger = require('morgan');
+const path = require('path');
 
 // Init App
 const app = express();
@@ -28,7 +29,7 @@ app.use(logger('dev'));
 
 // // Init static assets
 if (process.env.NODE_ENV === 'production') {
-    app.use(express.static('client/build'));
+    app.use(express.static('./client/build'));
 }
 
 // // Init DB
@@ -42,32 +43,33 @@ const db = require("./models");
 
 
 
-// // Auth Routes
-var authRoute = require('./routes/auth-routes.js')(app,passport,express);	
+// Auth Routes
+require('./routes/auth-routes.js')(app,passport,express);
+
 
 // // Load passport strategies
 require('./config/passport/passport.js')(passport,db.user);
 
-// // Import routes and give the server access to them.
-// //require("./routes/api-routes.js")(app);
-// //require("./routes/html-routes.js")(app);
+//Import routes and give the server access to them.
+require("./routes/api-routes.js")(app);
+//require("./routes/html-routes.js")(app);
 
 // // init routes from controller
 const routes = require('./controllers/articlesController');
 // app.use(routes);
 
-// Start our server so that it can begin listening to client requests.
+// app.get('/spacex/data',(req,res)=>{
+//   articlesController.postLaunches(req, res);
+//   articlesController.getLaunches(req,res);
+// });
 
-app.get('/',(_req,res)=>{
-  res.sendStatus(200);
-})
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "./client/build/index.html"));
+});
+
 const articlesController = require('./controllers/articlesController.js');
 
-app.get('/spacex/data',(req,res)=>{
-  articlesController.postLaunches(req, res);
-  articlesController.getLaunches(req,res);
 
-})
 
 db.sequelize.sync({}).then(function() {
   app.listen(PORT, function() {

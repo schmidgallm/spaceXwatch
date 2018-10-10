@@ -6,7 +6,7 @@ export default {
 
 
     getLaunches: () => {
-        return axios.get('http://localhost:5000/spacex/data')
+        return axios.get('/spacex/data')
             .then( response => {
                 console.log(response);
             })
@@ -14,4 +14,5 @@ export default {
                 console.log(err);
             })
     }
+
 }

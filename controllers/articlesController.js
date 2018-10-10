@@ -28,9 +28,10 @@ module.exports = {
     },
 
     getLaunches: (req, res) => {
-        console.log('launched');
-        res.send('Get Launches fired!!!')
         db.Events.findAll({})
+            .then(dbLaunches => {
+                res.send(dbLaunches);
+            })
     }
 
   

@@ -21,7 +21,6 @@ class Globe extends Component {
   componentDidMount() {
 
     const loadRockets = () => {
-      console.log('load rockets called');
       API.getLaunches()
         .then( res => {
           console.log("response recieved");
@@ -56,7 +55,7 @@ class Globe extends Component {
     const sphere = new THREE.Mesh(geometry, material);
     scene.add(sphere)
 
-    camera.position.z = 9;
+    camera.position.z = 10;
     scene.add(sphere);
     renderer.setClearColor('#191a1f');
     // renderer.setSize(width, height);
