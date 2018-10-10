@@ -4,15 +4,20 @@ import axios from 'axios';
 // export all api calls
 export default {
 
-
-    getLaunches: () => {
+  getLaunches: () => {
         return axios.get('/spacex/data')
-            .then( response => {
-                console.log(response);
-            })
-            .catch( err => {
-                console.log(err);
-            })
-    }
-
+            
+    },
+	
+	signUp: (data) => {
+		return axios.post('/signup', data)
+	},
+	
+	createGeoDataSet: () => {
+		return axios.get('/creategeodataset');
+	},
+	
+	addSpaceXData: () => {
+		return axios.get('/addspacexdata');
+	}
 }
