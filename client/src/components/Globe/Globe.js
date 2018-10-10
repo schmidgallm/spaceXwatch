@@ -56,7 +56,7 @@ class Globe extends Component {
     const sphere = new THREE.Mesh(geometry, material);
     scene.add(sphere)
 
-    camera.position.z = 13;
+    camera.position.z = 9;
     scene.add(sphere);
     renderer.setClearColor('#191a1f');
     // renderer.setSize(width, height);
@@ -67,9 +67,16 @@ class Globe extends Component {
     this.material = material
     this.sphere = sphere
     
+    const colors = ['red', 'blue', 'yellow', 'green', 'white', 'pink']
     const gps = [
-      { "name_e": "Phoenix", "latitude":33.4484, "longitude": -112.077019,"color": 0x0055ff  },
-      { "name_e": "Leipzig", "latitude":51.339762, "longitude": 12.371358,"color": 0xffffff }
+      { "name_e": "Phoenix", "latitude":33.4484, "longitude": -112.077019,"color": colors[Math.floor(Math.random() * colors.length)]},
+      { "name_e": "Leipzig", "latitude":51.339762, "longitude": 12.371358,"color": colors[Math.floor(Math.random() * colors.length)]},
+      { "name_e": "Leipzig", "latitude":100.339762, "longitude": 12.371358,"color": colors[Math.floor(Math.random() * colors.length)]},
+      { "name_e": "Leipzig", "latitude":-112.339762, "longitude": 54.371358,"color": colors[Math.floor(Math.random() * colors.length)]},
+      { "name_e": "Leipzig", "latitude":-51.339762, "longitude": -12.371358,"color": colors[Math.floor(Math.random() * colors.length)]},
+      { "name_e": "Leipzig", "latitude":51.339762, "longitude": -12.371358,"color": colors[Math.floor(Math.random() * colors.length)]},
+      { "name_e": "Leipzig", "latitude":125.339762, "longitude": 125.371358,"color": colors[Math.floor(Math.random() * colors.length)]},
+      { "name_e": "Leipzig", "latitude":19.339762, "longitude": -99.371358,"color": colors[Math.floor(Math.random() * colors.length)] },
     ]
     var loader = new THREE.FontLoader();
     loader.load( 'https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', function ( font ) {
@@ -79,11 +86,13 @@ class Globe extends Component {
           
             var material = new THREE.LineBasicMaterial({ 
               color: gps[j].color,
-              linewidth: 500
+              linewidth: 1 // cannot change :(
             });
             var geometry = new THREE.Geometry();
             geometry.vertices.push(new THREE.Vector3(0, 0, 0));
-            geometry.vertices.push(new THREE.Vector3(8, 0, 0));
+            // randNum represents line length - only numbers 6-9 will give a decent visual of lines
+            const randNum = [6,7,8,9]
+            geometry.vertices.push(new THREE.Vector3(randNum[Math.floor(Math.random() * 4)], 0, 0));
             var line = new THREE.Line(geometry, material);
     
             line.rotation.z =THREE.Math.degToRad( gps[j].latitude );
@@ -167,7 +176,7 @@ class Globe extends Component {
   }
 
   animate() {
-    this.sphere.rotation.x += 0.000
+    this.sphere.rotation.x += 0.00
     this.sphere.rotation.y += 0.00
 
     this.renderScene()

@@ -1,3 +1,4 @@
+
 module.exports = function (sequelize, DataTypes) {
 
   const GeoDataSet = sequelize.define("GeoDataSet", {
@@ -9,6 +10,7 @@ module.exports = function (sequelize, DataTypes) {
       primaryKey: true
     },
     */
+    
 
     title: {
       type: DataTypes.STRING,
