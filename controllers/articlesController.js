@@ -21,9 +21,12 @@ module.exports = {
                     image: flight.links.mission_patch,
                     desc: flight.details,
                     lat: 33.448376,
-                    lon: -112.074036
+                    lon: -112.074036,
+					          GeoDataSetId: 2
                 })
-            })
+			});
+            
+			res.send("Added spaceX data to database");
         })
     },
 
@@ -32,7 +35,17 @@ module.exports = {
             .then(dbLaunches => {
                 res.send(dbLaunches);
             })
-    }
+    },
+	
+	createGeoDataSet: (req, res) => {
+		db.GeoDataSet.create({
+			title: "SpaceX",
+			image: "https://media.cdn.gradconnection.com/uploads/7c6688fb-ac3a-4a2f-b480-0fda0745a583-SpaceX_Logo.jpg",
+			userId: "1"
+		});
+		
+		res.send("complete");
+	}
 
   
 }

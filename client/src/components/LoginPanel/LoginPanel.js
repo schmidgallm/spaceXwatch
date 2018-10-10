@@ -7,42 +7,33 @@ class LoginPanel extends Component {
 	
 	constructor(props) {
 		super(props);
-
-		this.state = {
-			signUpUser: '',
-			signUpPassword: '',
-			signUpEmail: ''
-		}
-	}
-
-	handleInputChange = (value, title) => {
-		switch(title){
-			case 'Username':
-			this.setState({
-				signUpUser: value
-			})
-			break;
-			case 'Email':
-			this.setState({
-				signUpEmail: value
-			})
-			break;
-			case 'Password':
-			this.setState({
-				signUpPassword: value
-			})
-			break;
-		}
-	}
-
-	postSignUp = () => {
 		
+		this.myRef = React.createRef();
 	}
 	
+	submitForm2 = () =>
+	{
+		let myInputs = this.myRef.current.getElementsByTagName("input");
+		
+		const data = {
+			username: myInputs[3].value,
+			password: myInputs[4].value,
+			email: myInputs[2].value,
+		}
+		
+		API.signUp(data)
+        .then( res => {
+          window.location.reload();
+        })
+        .catch( err => {
+          console.log(err);
+        })
+	}
+
 	
 	render() {
 		return (
-				<div className={this.props.panelShown ? "login-panel login-panel__panelShown" : "login-panel"}>
+				<div className={this.props.panelShown ? "login-panel login-panel__panelShown" : "login-panel"} ref={this.myRef}>
 					<br />
 					<div className="panel-title">
 						Login
@@ -53,10 +44,10 @@ class LoginPanel extends Component {
 					<div className="panel-title">
 						Sign Up
 					</div>
-					<InputWrapper type="text" title="Email&nbsp; &nbsp;" cbInput={this.handleInputChange}/>
-					<InputWrapper type="text" title="Username" cbInput={this.handleInputChange}/>
-					<InputWrapper type="password" title="Password" cbInput={this.handleInputChange}/>
-					<button type="submit" onClick={this.postSignUp}>Sign Up</button>
+					<InputWrapper type="text" title="Email&nbsp; &nbsp;"/>
+					<InputWrapper type="text" title="Username"/>
+					<InputWrapper type="password" title="Password"/>
+					<button onClick={this.submitForm2}>Sign Up</button>
 				</div>
 		);
 	}

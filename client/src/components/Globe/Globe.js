@@ -21,14 +21,19 @@ class Globe extends Component {
   componentDidMount() {
 
     const loadRockets = () => {
-      API.getLaunches()
-        .then( res => {
-          console.log("response recieved");
-          console.log(res);
-        })
-        .catch( err => {
-          console.log('Err API GET LAUNCHES : ' ,err);
-        })
+      API.getLaunches().then( response => {
+                console.log(response);
+				if(response.data.length < 1)
+				{
+					console.log("Didn't find spaceX data so let's add it to the database");
+					API.createGeoDataSet().then(response => {
+						API.addSpaceXData().then(res => { console.log(res) });
+					});
+				}
+            })
+            .catch( err => {
+                console.log(err);
+            });
     }
     loadRockets();
     
