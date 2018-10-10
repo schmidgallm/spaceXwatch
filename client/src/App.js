@@ -12,13 +12,24 @@ class App extends Component {
 	
   constructor(props) {
     super(props);
-    this.state = {showLoginPanel: false};
-	this.toggleLoginPanel = this.toggleLoginPanel.bind(this);
+    this.state = {
+      showLoginPanel: false,
+      display: 'block'
+    };
+    this.toggleLoginPanel = this.toggleLoginPanel.bind(this);
   }
   
   toggleLoginPanel() {
 	this.setState(state => ({ showLoginPanel: !state.showLoginPanel }));
   }
+
+  componentDidMount(){
+    setTimeout(() => {
+      this.setState({
+        display: 'none'
+      })  
+    }, 2000);   
+}
 	
   render() {
     return (

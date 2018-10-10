@@ -21,16 +21,15 @@ class Globe extends Component {
   componentDidMount() {
 
     const loadRockets = () => {
-      API.getRockets()
+      API.getLaunches()
         .then( res => {
-          const launches = res.data;
-          console.log(launches);
+          console.log("response recieved");
+          console.log(res);
         })
         .catch( err => {
-          console.log(err);
+          console.log('Err API GET LAUNCHES : ' ,err);
         })
     }
-
     loadRockets();
     
     const width = window.innerWidth - 17;
@@ -45,7 +44,7 @@ class Globe extends Component {
       1000
     )
     camera.lookAt(new THREE.Vector3(0,0,0));
-    const renderer = new THREE.WebGLRenderer( { alpha: true } );
+    const renderer = new THREE.WebGLRenderer();
     renderer.setSize(width, height);
     const geometry = new THREE.SphereGeometry(5, 32, 32);
     const texture = new THREE.TextureLoader().load(img);
@@ -54,11 +53,11 @@ class Globe extends Component {
     // ]
     const material =  new THREE.MeshBasicMaterial({map: texture});
     const sphere = new THREE.Mesh(geometry, material);
-    //renderer.setClearColor(0xFFFFFF, 0);
     scene.add(sphere)
 
-    camera.position.z = 11;
+    camera.position.z = 10;
     scene.add(sphere);
+    renderer.setClearColor('#191a1f');
     // renderer.setSize(width, height);
 
     this.scene = scene
@@ -67,48 +66,63 @@ class Globe extends Component {
     this.material = material
     this.sphere = sphere
     
+    const colors = ['red', 'blue', 'yellow', 'green', 'white', 'pink']
     const gps = [
-      { "name_e": "Phoenix", "latitude":33.4484, "longitude": -112.077019,"color": 0x0055ff  },
-      { "name_e": "Leipzig", "latitude":51.339762, "longitude": 12.371358,"color": 0xffffff }
+      { "name_e": "Phoenix", "latitude":33.4484, "longitude": -112.077019,"color": colors[Math.floor(Math.random() * colors.length)]},
+      { "name_e": "Leipzig", "latitude":51.339762, "longitude": 12.371358,"color": colors[Math.floor(Math.random() * colors.length)]},
+      { "name_e": "Leipzig", "latitude":100.339762, "longitude": 12.371358,"color": colors[Math.floor(Math.random() * colors.length)]},
+      { "name_e": "Leipzig", "latitude":-112.339762, "longitude": 54.371358,"color": colors[Math.floor(Math.random() * colors.length)]},
+      { "name_e": "Leipzig", "latitude":-51.339762, "longitude": -12.371358,"color": colors[Math.floor(Math.random() * colors.length)]},
+      { "name_e": "Leipzig", "latitude":51.339762, "longitude": -12.371358,"color": colors[Math.floor(Math.random() * colors.length)]},
+      { "name_e": "Leipzig", "latitude":125.339762, "longitude": 125.371358,"color": colors[Math.floor(Math.random() * colors.length)]},
+      { "name_e": "Leipzig", "latitude":19.339762, "longitude": -99.371358,"color": colors[Math.floor(Math.random() * colors.length)] },
     ]
     var loader = new THREE.FontLoader();
     loader.load( 'https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', function ( font ) {
     //build/NanumGothic_Regular.json
     //https://threejs.org/examples/fonts/helvetiker_regular.typeface.json
-        for ( var j = 0; j < gps.length; j ++ ) {
-            //console.log(gps[j].name_k);
-            var material = new THREE.LineBasicMaterial({ color: gps[j].color });
+        for ( var j = 0; j < gps.length; j ++ ) {  
+          
+            var material = new THREE.LineBasicMaterial({ 
+              color: gps[j].color,
+              linewidth: 1 // cannot change :(
+            });
             var geometry = new THREE.Geometry();
             geometry.vertices.push(new THREE.Vector3(0, 0, 0));
-            geometry.vertices.push(new THREE.Vector3(7, 0, 0));
+            // randNum represents line length - only numbers 6-9 will give a decent visual of lines
+            const randNum = [6,7,8,9]
+            geometry.vertices.push(new THREE.Vector3(randNum[Math.floor(Math.random() * 4)], 0, 0));
             var line = new THREE.Line(geometry, material);
     
             line.rotation.z =THREE.Math.degToRad( gps[j].latitude );
             line.rotation.y =THREE.Math.degToRad( gps[j].longitude );
-            //scene.add(line); 
-    
-            // let xMid;
+            scene.add(line); 
+            
+            /*
+            OPTIONAL TEXT WITH LINE THAT WILL WRITE name_e AT END OF LINE:
+
+            let xMid;
             var text;
             var textShape = new THREE.BufferGeometry();
             var color = gps[j].color;
-            //var matDark = new THREE.LineBasicMaterial( {
-            //color: color,
-            //side: THREE.DoubleSide
-            //} );
+            var matDark = new THREE.LineBasicMaterial( {
+            color: color,
+            side: THREE.DoubleSide
+            } );
             var matLite = new THREE.MeshBasicMaterial( {
             color: color,
             transparent: true,
             opacity: 0.7,
             side: THREE.DoubleSide
             } );
-            //var message = "";
-            
+
+            var message = "";
             var shapes = font.generateShapes( gps[j].name_e, 0.2, 2 );
             var geometryTwo = new THREE.ShapeGeometry( shapes );
             geometryTwo.computeBoundingBox();
-            // xMid = -0.5 * ( geometryTwo.boundingBox.max.x - geometryTwo.boundingBox.min.x );
-            //geometry.translate( xMid, 0, 0 );
-            // make shape ( N.B. edge view not visible )
+            xMid = -0.5 * ( geometryTwo.boundingBox.max.x - geometryTwo.boundingBox.min.x );
+            geometry.translate( xMid, 0, 0 );
+            make shape ( N.B. edge view not visible )
             textShape.fromGeometry( geometryTwo );
             text = new THREE.Mesh( textShape, matLite );
             
@@ -123,9 +137,8 @@ class Globe extends Component {
             text.position.y = ab.y;
             text.position.z = ab.z;
     
-            //scene.add( text );	
-            
-            
+            scene.add( text );	
+            */
         }
     })
 
@@ -163,7 +176,7 @@ class Globe extends Component {
 
   animate() {
     this.sphere.rotation.x += 0.00
-    this.sphere.rotation.y += 0.001
+    this.sphere.rotation.y += 0.00
 
     this.renderScene()
     this.frameId = window.requestAnimationFrame(this.animate)
