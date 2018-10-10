@@ -1,47 +1,55 @@
 module.exports = function(sequelize, DataTypes) {
 	
     const Events = sequelize.define("Events", {
-      name: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-          len: [1]
-        }
-	  },
-	  
-	  image: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-          len: [1]
-        }
-      },
-	  
-	  desc: {
-        type: DataTypes.STRING(2000),
-        allowNull: false,
-        validate: {
-          len: [1]
-        }
-      },
-	  
-	  lat: {
-        type: DataTypes.DECIMAL(9,6),
-        allowNull: false,
-        validate: {
-          len: [1],
-		  isNumeric: true
-        }
-      },
-	  
-	  lon: {
-        type: DataTypes.DECIMAL(9,6),
-        allowNull: false,
-        validate: {
-          len: [1],
-		  isNumeric: true
-        }
+       name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        len: [1]
       }
+    },
+
+    flightNumber: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      allowNull: false
+    },
+
+    flightYear: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+
+    image: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        len: [1]
+      }
+    },
+
+    desc: {
+      type: DataTypes.STRING(2000),
+      validate: {
+        len: [1]
+      }
+    },
+
+    lat: {
+      type: DataTypes.DECIMAL(9, 6),
+      allowNull: false,
+      validate: {
+        len: [1]
+      }
+    },
+
+    lon: {
+      type: DataTypes.DECIMAL(9, 6),
+      allowNull: false,
+      validate: {
+        len: [1]
+      }
+    }
 	  
 	  
     });
