@@ -110,7 +110,7 @@ class Globe extends Component {
     const colors = ['red', 'blue', 'yellow', 'green', 'white', 'pink']
 
     // initial test data to populate lines
-    
+
     /*
     const gps = [
       { "name_e": "Phoenix", "latitude":33.4484, "longitude": -112.077019,"color": colors[Math.floor(Math.random() * colors.length)]},
@@ -138,7 +138,7 @@ class Globe extends Component {
       // load in spacex/data
       loader.load('/spacex/data', function (font) {
 
-        for (var j = 0; j < 1; j++) {
+        for (var j = 0; j < gps.length; j++) {
 
           // create new line for each iterator
           var material = new THREE.LineBasicMaterial({
@@ -180,8 +180,9 @@ class Globe extends Component {
           */
 
           // create empty array to hold all line objects and push each line into objects
-          var objects = [];
+          const  objects = [];
           objects.push(line)
+          console.log(objects);
           const projector = new THREE.Projector();
           const mouse2D = new THREE.Vector3(0, 10000, 0.5);
 
@@ -249,9 +250,12 @@ class Globe extends Component {
       
               scene.add( text );	
               */
-        }
-      })
-    });
+
+        } // END FOR LOOP
+
+      }); // END LOADER.LOAD FUNCTION
+       
+    });  // END GET LAUNCHES FUNCTION
 
     // on mount append all renderes to domElement which is the canvas
     this.mount.appendChild(this.renderer.domElement)
