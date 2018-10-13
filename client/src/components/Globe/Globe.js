@@ -171,7 +171,6 @@ class Globe extends Component {
         */
 
           // create new line for each iterator
-
           var material = new THREE.LineBasicMaterial({
             color: 'white',
             linewidth: 1, // cannot change :(
@@ -211,12 +210,18 @@ class Globe extends Component {
           scene.add(parent);
 
           var stick = new THREE.Object3D();
-          var point = new THREE.Vector3(5,0,0);
+          var point = new THREE.Vector3(5, 0, 0);
           stick.lookAt(point);
           parent.add(stick);
 
-          var geometry = new THREE.RingBufferGeometry(.3, .4, 30, 30, 6.3);
-          var material = new THREE.MeshBasicMaterial( { color: 'red', side: THREE.DoubleSide } );
+          var geometry = new THREE.RingBufferGeometry(.2, .1, 30, 5, 6.3);
+          var material = new THREE.MeshBasicMaterial({
+            color: 'gold',
+            transparent: true,
+            wireframe: true,
+            opacity: .5,
+            side: THREE.DoubleSide
+          });
           var mesh = new THREE.Mesh(geometry, material);
           mesh.position.set(0, 0, 5.5);
           stick.add(mesh);
