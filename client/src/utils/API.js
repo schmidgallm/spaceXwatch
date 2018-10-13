@@ -19,5 +19,9 @@ export default {
 	
 	addSpaceXData: () => {
 		return axios.get('/addspacexdata');
+	},
+
+	getImage: () => {
+		return axios.get('spacex/images');
 	}
 }
