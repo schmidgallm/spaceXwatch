@@ -94,6 +94,54 @@ class Globe extends Component {
 
     /*
     // ---------------------------
+    // STARS SKYBOX OBJECT CREATION
+    // ---------------------------
+    */
+    
+    // load texture into variable so its loaded before we call the box
+    const boxTexture = new THREE.TextureLoader().load('spacex/images');
+    // const sunTexture = new THREE.TextureLoader().load('spacex/images/sun');
+    const geomerty = new THREE.BoxBufferGeometry(100, 100, 100, 100);
+   
+    // inti box material for 6 side cube
+    const boxMaterial = [
+      new THREE.MeshBasicMaterial({
+        map: boxTexture,
+        side: THREE.DoubleSide
+      }),
+      new THREE.MeshBasicMaterial({
+        map: boxTexture,
+        side: THREE.DoubleSide
+      }),
+      new THREE.MeshBasicMaterial({
+        map: boxTexture,
+        side: THREE.DoubleSide
+      }),
+      new THREE.MeshBasicMaterial({
+        map: boxTexture,
+        side: THREE.DoubleSide
+      }),
+      new THREE.MeshBasicMaterial({
+        map: boxTexture,
+        side: THREE.DoubleSide
+      }),
+      new THREE.MeshBasicMaterial({
+        map: boxTexture,
+        side: THREE.DoubleSide
+      }),
+    ];
+    
+    // pull geometry and boxmaterial into variable and add to scene
+    const mesh = new THREE.Mesh(geomerty, boxMaterial);
+    scene.add(mesh);
+
+    // init ambient light and add to scene
+    const ambientLight = new THREE.AmbientLight(0xFFFFFF, 0.5);
+    scene.add(ambientLight)
+
+
+    /*
+    // ---------------------------
     // EARTH OBJECT CREATION
     // ---------------------------
     */
@@ -118,7 +166,7 @@ class Globe extends Component {
     // set camera position from viewscreen
     camera.position.z = 13;
     scene.add(sphere);
-    renderer.setClearColor('#191a1f');
+    // renderer.setClearColor('#191a1f');
 
     this.scene = scene
     this.camera = camera
