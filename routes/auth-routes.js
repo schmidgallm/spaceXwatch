@@ -2,12 +2,12 @@ const path = require("path");
 
 module.exports = function(app,passport,express){
 
-	/*
+	
 	app.post('/signin', passport.authenticate('local-signin',  
 			 { successRedirect: '/',
 			   failureRedirect: '/signin'}
 			 ));
-*/
+
 /*
 	app.post('/signup', (req, res) => {
 		console.log(req.body);
@@ -51,10 +51,9 @@ module.exports = function(app,passport,express){
 		 }
 	});*/
 
-	app.get('/session',  function(req,res){
-
+	app.get('/session', function(req,res){
 		//for testing
-		res.send(req.user);
+		res.json(req.user);
 
 	});
 	

@@ -13,6 +13,14 @@ export default {
 		return axios.post('/signup', data)
 	},
 	
+	signIn: (data) => {
+		return axios.post('/signin', data)
+	},
+	
+	session: () => {
+		return axios.get('/session');
+	},
+	
 	createGeoDataSet: () => {
 		return axios.get('/creategeodataset');
 	},
