@@ -21,6 +21,16 @@ class Globe extends Component {
     this.stop = this.stop.bind(this);
     this.animate = this.animate.bind(this);
 
+    /*
+    this.state = {
+      name: '',
+      flightNumber: '',
+      flightYear: '',
+      image: '',
+      desc: ''
+    }
+    */
+
   }
 
   componentDidMount() {
@@ -140,7 +150,28 @@ class Globe extends Component {
 
         for (var j = 0; j < gps.length; j++) {
 
+          /*
+          var geometry = new THREE.RingBufferGeometry( .5, .4, 30, 30, 6, 6.3 );
+          var material = new THREE.MeshBasicMaterial( { color: 0xffffff, side: THREE.DoubleSide } );
+          var mesh = new THREE.Mesh( geometry, material );
+          scene.add( mesh );
+
+          const placeObjectOnPlanet = (mesh, lat, lon, radius) => {
+            var latRad = lat * (Math.PI / 180);
+            var lonRad = -lon * (Math.PI / 180);
+            mesh.position.set(
+                Math.cos(latRad) * Math.cos(lonRad) * radius,
+                Math.sin(latRad) * radius,
+                Math.cos(latRad) * Math.sin(lonRad) * radius
+            );
+            mesh.rotation.set(0.0, -lonRad, latRad - Math.PI * 0.5);
+        }
+
+        placeObjectOnPlanet(mesh, gps[j].lat, gps[j].lon, .5);
+        */
+
           // create new line for each iterator
+
           var material = new THREE.LineBasicMaterial({
             color: colors[Math.floor(Math.random() * colors.length)],
             linewidth: 1, // cannot change :(
@@ -150,9 +181,8 @@ class Globe extends Component {
           var geometry = new THREE.Geometry();
           geometry.vertices.push(new THREE.Vector3(0, 0, 0));
 
-          // randNum represents line length - only numbers 6-9 will give a decent visual of lines
-          const randNum = [6, 7, 8, 9]
-          geometry.vertices.push(new THREE.Vector3(8, 0, 0));
+          // push each line to a vertice and create declare the line
+          geometry.vertices.push(new THREE.Vector3(5.5, 0, 0));
           var line = new THREE.Line(geometry, material);
 
           // convert each line from deg to rad so it can init into lat and long coords
@@ -172,50 +202,33 @@ class Globe extends Component {
           // add line to scene
           scene.add(line);
 
-
-          /*
-          //---------------------------
-          // CLICK EVENTS
-          //---------------------------
-          */
-
           // create empty array to hold all line objects and push each line into objects
-          const  objects = [];
-          objects.push(line)
-          console.log(objects);
-          const projector = new THREE.Projector();
-          const mouse2D = new THREE.Vector3(0, 10000, 0.5);
+          // will need this for click events
 
-          // event listener for each click on object
-          document.addEventListener('click', onDocumentMouseClick, false);
+          objects.push(line);
 
-          function onDocumentMouseClick(event) {
-            // need to prevent any sort of default behavior
-            event.preventDefault();
-            // get the x and y coords of mouse
-            mouse2D.x = (event.clientX / window.innerWidth) * 2 - 1;
-            mouse2D.y = -(event.clientY / window.innerHeight) * 2 + 1;
-            var vector = new THREE.Vector3(mouse2D.x, mouse2D.y, 0.5);
-            projector.unprojectVector(vector, camera);
-            // start the raycaster -- esentially it projects a ray from position of click and see if it intersects with any objects in its path
-            var raycaster = new THREE.Raycaster(camera.position, vector.sub(camera.position).normalize());
-            var intersects = raycaster.intersectObjects(objects);
-            if (intersects.length > 0) {
-              var firstIntersectedObject = intersects[0];
-              // this will give you the first intersected Object if there are multiple.
-              console.log(firstIntersectedObject.object.userData);
-            }
-          }
+          var parent = new THREE.Object3D();
+          scene.add(parent);
 
-          /*
+          var stick = new THREE.Object3D();
+          var point = new THREE.Vector3(5.5,0,0);
+          stick.lookAt(point);
+          parent.add(stick);
+
+          var geometry = new THREE.RingBufferGeometry(1,5,5,5,32);
+          var mesh = new THREE.Mesh(geometry, material);
+          mesh.position.set(0, 0, 0);
+          stick.add(mesh);
+
+
           // ---------------------------
           // OPTIONAL TEXT WITH LINE THAT WILL WRITE name_e AT END OF LINE:
           // ---------------------------
-  
+          /*
               let xMid;
               var text;
               var textShape = new THREE.BufferGeometry();
-              var color = gps[j].color;
+              var color = 'red';
               var matDark = new THREE.LineBasicMaterial( {
               color: color,
               side: THREE.DoubleSide
@@ -228,19 +241,19 @@ class Globe extends Component {
               } );
   
               var message = "";
-              var shapes = font.generateShapes( gps[j].name_e, 0.2, 2 );
+              var shapes = font.generateShapes( gps[j].name, 0.2, 2 );
               var geometryTwo = new THREE.ShapeGeometry( shapes );
               geometryTwo.computeBoundingBox();
               xMid = -0.5 * ( geometryTwo.boundingBox.max.x - geometryTwo.boundingBox.min.x );
               geometry.translate( xMid, 0, 0 );
-              make shape ( N.B. edge view not visible )
+              // make shape ( N.B. edge view not visible )
               textShape.fromGeometry( geometryTwo );
               text = new THREE.Mesh( textShape, matLite );
               
-              text.rotation.z =THREE.Math.degToRad( gps[j].latitude );
-              text.rotation.y =THREE.Math.degToRad( gps[j].longitude );
+              text.rotation.z =THREE.Math.degToRad( gps[j].lat );
+              text.rotation.y =THREE.Math.degToRad( gps[j].lon );
       
-              var a = new THREE.Euler( 0, THREE.Math.degToRad( gps[j].longitude ), THREE.Math.degToRad( gps[j].latitude ), 'XYZ' );
+              var a = new THREE.Euler( 0, THREE.Math.degToRad( gps[j].lon ), THREE.Math.degToRad( gps[j].lon ), 'XYZ' );
               var b = new THREE.Vector3( 9, 0, 0 );
               var ab = b.applyEuler(a);	
               
@@ -251,11 +264,57 @@ class Globe extends Component {
               scene.add( text );	
               */
 
+
         } // END FOR LOOP
 
       }); // END LOADER.LOAD FUNCTION
-       
-    });  // END GET LAUNCHES FUNCTION
+
+    }); // END GET LAUNCHES FUNCTION
+
+
+    /*
+    //---------------------------
+    // CLICK EVENTS
+    //---------------------------
+    */
+
+
+    const projector = new THREE.Projector();
+    const mouse2D = new THREE.Vector3(0, 10000, 0.5);
+    const objects = [];
+    // event listener for each click on object
+    document.addEventListener('click', onDocumentMouseClick, false);
+
+    // handle state change on click
+    const handleChangeUserDataLineObject = (name, flightNumber, flightYear, image, desc) => {
+      this.props.cbProp({
+        name: name,
+        flightNumber: flightNumber,
+        flightYear: flightYear,
+        image: image,
+        desc: desc,
+      });
+    }
+
+    function onDocumentMouseClick(event) {
+      // need to prevent any sort of default behavior
+      event.preventDefault();
+      // get the x and y coords of mouse
+      mouse2D.x = (event.clientX / window.innerWidth) * 2 - 1;
+      mouse2D.y = -(event.clientY / window.innerHeight) * 2 + 1;
+      var vector = new THREE.Vector3(mouse2D.x, mouse2D.y, 0.5);
+      projector.unprojectVector(vector, camera);
+      // start the raycaster -- esentially it projects a ray from position of click and see if it intersects with any objects in its path
+      var raycaster = new THREE.Raycaster(camera.position, vector.sub(camera.position).normalize());
+      var intersects = raycaster.intersectObjects(objects);
+      if (intersects.length > 0) {
+        var firstIntersectedObject = intersects[0];
+        // this will give you the first intersected Object if there are multiple.
+        console.log(firstIntersectedObject.object.userData);
+        console.log(firstIntersectedObject.object.userData.name);
+        handleChangeUserDataLineObject(firstIntersectedObject.object.userData.name, firstIntersectedObject.object.userData.flightNumber, firstIntersectedObject.object.userData.flightYear, firstIntersectedObject.object.userData.image, firstIntersectedObject.object.userData.desc);
+      }
+    }
 
     // on mount append all renderes to domElement which is the canvas
     this.mount.appendChild(this.renderer.domElement)

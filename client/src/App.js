@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Globe from './components/Globe/Globe';
+import Modal from './components/Modal/Modal';
 import WelcomeBanner from './components/WelcomeBanner/WelcomeBanner';
 import LoginButton from './components/LoginButton/LoginButton';
 import CloseButton from './components/CloseButton/CloseButton';
@@ -8,17 +9,29 @@ import LoginPanel from './components/LoginPanel/LoginPanel';
 import Section from './components/Section/Section';
 import './app.css';
 
+
 class App extends Component {
 	
   constructor(props) {
     super(props);
     this.state = {
       showLoginPanel: false,
-      display: 'block'
-    };
+			display: 'block',
+			modalState: {}
+		};
+		
+
     this.toggleLoginPanel = this.toggleLoginPanel.bind(this);
   }
-  
+	
+	sendModalState = (stateObject) => {
+		this.setState({
+			modalState: stateObject
+		});
+		console.log(this.state);
+	}
+
+
   toggleLoginPanel() {
 	this.setState(state => ({ showLoginPanel: !state.showLoginPanel }));
   }
@@ -44,7 +57,8 @@ class App extends Component {
       <div className="section_wrapper">
 	    <div className="globe">
 			<div className="logo">GDV</div>
-			<Globe 		   panelShown={this.state.showLoginPanel}/>
+			<Modal name={this.state.modalState.name} flightNumber={this.state.modalState.flightNumber} flightYear={this.state.modalState.flightYear} image={this.state.modalState.image} desc={this.state.modalState.desc}  />
+			<Globe 		   panelShown={this.state.showLoginPanel} cbProp={this.sendModalState}/>
 			<WelcomeBanner panelShown={this.state.showLoginPanel}/>
 			<LoginButton   panelShown={this.state.showLoginPanel} cbProp={this.toggleLoginPanel}/>
 			<TopButton />
