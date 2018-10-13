@@ -291,7 +291,7 @@ class Globe extends Component {
     // event listener for each click on object
     document.addEventListener('click', onDocumentMouseClick, false);
 
-    // handle state change on click
+    // handle callback function that updates props on click
     const handleChangeUserDataLineObject = (name, flightNumber, flightYear, image, desc) => {
       this.props.cbProp({
         name: name,
