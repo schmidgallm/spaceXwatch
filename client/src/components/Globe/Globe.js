@@ -37,9 +37,19 @@ class Globe extends Component {
 
     // set timout function increases earth size after 9 seconds.
     // wait 9 seconds becuase beginning text animation on load takes about 8 seconds
-    setTimeout(() => {
-      camera.position.z = 9;
-    }, 8000)
+	setTimeout(() => { camera.position.z = 12; }, 8250);
+	setTimeout(() => { camera.position.z = 11.75; }, 8312);
+	setTimeout(() => { camera.position.z = 11.5; }, 8375);
+	setTimeout(() => { camera.position.z = 11.25; }, 8437);
+	setTimeout(() => { camera.position.z = 11; }, 8500);
+	setTimeout(() => { camera.position.z = 10.75; }, 8562);
+	setTimeout(() => { camera.position.z = 10.5; }, 8675);
+	setTimeout(() => { camera.position.z = 10.25; }, 8737);
+	setTimeout(() => { camera.position.z = 10; }, 8750);
+	setTimeout(() => { camera.position.z = 9.75; }, 8812);
+	setTimeout(() => { camera.position.z = 9.5; }, 8875);
+	setTimeout(() => { camera.position.z = 9.25; }, 8937);
+    setTimeout(() => { camera.position.z = 9; }, 9000);
 
     // load rockets function finds the api data and logs it
     // need it here and when rendering lines becuase it will also populate api from databse if no data exists

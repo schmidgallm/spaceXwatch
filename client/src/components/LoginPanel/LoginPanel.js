@@ -11,6 +11,24 @@ class LoginPanel extends Component {
 		this.myRef = React.createRef();
 	}
 	
+	submitForm1 = () =>
+	{
+		let myInputs = this.myRef.current.getElementsByTagName("input");
+		
+		const data = {
+			username: myInputs[0].value,
+			password: myInputs[1].value,
+		}
+		
+		API.signIn(data)
+        .then( res => {
+          window.location.reload();
+        })
+        .catch( err => {
+          console.log(err);
+        })
+	}
+	
 	submitForm2 = () =>
 	{
 		let myInputs = this.myRef.current.getElementsByTagName("input");
@@ -35,19 +53,19 @@ class LoginPanel extends Component {
 		return (
 				<div className={this.props.panelShown ? "login-panel login-panel__panelShown" : "login-panel"} ref={this.myRef}>
 					<br />
-					<div className="panel-title">
-						Login
-					</div>
-					<InputWrapper type="text" title="Username" cbInput={this.handleInputChange}/>
-					<InputWrapper type="password" title="Password" cbInput={this.handleInputChange}/>
 					<br />
-					<div className="panel-title">
-						Sign Up
+					<br />
+					<InputWrapper type="text" title="Username"/>
+					<InputWrapper type="password" title="Password"/>	
+					<div className="panel-title" onClick={this.submitForm1}>
+						Login
 					</div>
 					<InputWrapper type="text" title="Email&nbsp; &nbsp;"/>
 					<InputWrapper type="text" title="Username"/>
 					<InputWrapper type="password" title="Password"/>
-					<button onClick={this.submitForm2}>Sign Up</button>
+					<div className="panel-title" onClick={this.submitForm2}>
+						Sign Up
+					</div>
 				</div>
 		);
 	}

@@ -19,13 +19,27 @@
 .panel-title
 {
 	font-family: 'Nunito', sans-serif;
-	font-size: 24px;
+	font-size: 20px;
 	padding-left: 6px;
 	padding-right: 6px;
 	background-color: rgba(255,255,255, 0.9);
-	border-bottom: 3px solid gray;
-	margin-left: 16px;
+	border: 2px solid gray;
+	margin-left: 200px;
 	width: max-content;
+	cursor: pointer;
+	transition: background-color 250ms ease-in-out;
+}
+
+.panel-title:nth-child(6)
+{
+	transform: translateX(21px);
+}
+
+.panel-title:hover
+{
+	background-color: rgb(25, 25, 33);
+	color: rgba(255,255,255, 0.9);
+	border: 2px solid rgb(130, 130, 137);
 }
 
 .input-wrapper
