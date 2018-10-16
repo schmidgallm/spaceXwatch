@@ -37,19 +37,45 @@ class Globe extends Component {
 
     // set timout function increases earth size after 9 seconds.
     // wait 9 seconds becuase beginning text animation on load takes about 8 seconds
-	setTimeout(() => { camera.position.z = 12; }, 8250);
-	setTimeout(() => { camera.position.z = 11.75; }, 8312);
-	setTimeout(() => { camera.position.z = 11.5; }, 8375);
-	setTimeout(() => { camera.position.z = 11.25; }, 8437);
-	setTimeout(() => { camera.position.z = 11; }, 8500);
-	setTimeout(() => { camera.position.z = 10.75; }, 8562);
-	setTimeout(() => { camera.position.z = 10.5; }, 8675);
-	setTimeout(() => { camera.position.z = 10.25; }, 8737);
-	setTimeout(() => { camera.position.z = 10; }, 8750);
-	setTimeout(() => { camera.position.z = 9.75; }, 8812);
-	setTimeout(() => { camera.position.z = 9.5; }, 8875);
-	setTimeout(() => { camera.position.z = 9.25; }, 8937);
-    setTimeout(() => { camera.position.z = 9; }, 9000);
+    setTimeout(() => {
+      camera.position.z = 12;
+    }, 8250);
+    setTimeout(() => {
+      camera.position.z = 11.75;
+    }, 8312);
+    setTimeout(() => {
+      camera.position.z = 11.5;
+    }, 8375);
+    setTimeout(() => {
+      camera.position.z = 11.25;
+    }, 8437);
+    setTimeout(() => {
+      camera.position.z = 11;
+    }, 8500);
+    setTimeout(() => {
+      camera.position.z = 10.75;
+    }, 8562);
+    setTimeout(() => {
+      camera.position.z = 10.5;
+    }, 8675);
+    setTimeout(() => {
+      camera.position.z = 10.25;
+    }, 8737);
+    setTimeout(() => {
+      camera.position.z = 10;
+    }, 8750);
+    setTimeout(() => {
+      camera.position.z = 9.75;
+    }, 8812);
+    setTimeout(() => {
+      camera.position.z = 9.5;
+    }, 8875);
+    setTimeout(() => {
+      camera.position.z = 9.25;
+    }, 8937);
+    setTimeout(() => {
+      camera.position.z = 9;
+    }, 9000);
 
     // load rockets function finds the api data and logs it
     // need it here and when rendering lines becuase it will also populate api from databse if no data exists
@@ -94,15 +120,27 @@ class Globe extends Component {
 
     /*
     // ---------------------------
+    // INIT LIGHT SOURCE
+    // ---------------------------
+    */
+
+    var dirLight;
+
+    dirLight = new THREE.DirectionalLight( 0xffffff, 2);
+    dirLight.position.set(1, 1, 1).normalize();
+    scene.add(dirLight);
+
+    /*
+    // ---------------------------
     // STARS SKYBOX OBJECT CREATION
     // ---------------------------
     */
-    
+
     // load texture into variable so its loaded before we call the box
     const boxTexture = new THREE.TextureLoader().load('spacex/images');
     // const sunTexture = new THREE.TextureLoader().load('spacex/images/sun');
     const geomerty = new THREE.BoxBufferGeometry(100, 100, 100, 100);
-   
+
     // inti box material for 6 side cube
     const boxMaterial = [
       new THREE.MeshBasicMaterial({
@@ -130,14 +168,10 @@ class Globe extends Component {
         side: THREE.DoubleSide
       }),
     ];
-    
+
     // pull geometry and boxmaterial into variable and add to scene
     const mesh = new THREE.Mesh(geomerty, boxMaterial);
     scene.add(mesh);
-
-    // init ambient light and add to scene
-    const ambientLight = new THREE.AmbientLight(0xFFFFFF, 0.5);
-    scene.add(ambientLight)
 
 
     /*
@@ -155,7 +189,7 @@ class Globe extends Component {
         map: new THREE.TextureLoader().load('./earthTexture.jpg')
       })
     ]
-    const material = new THREE.MeshBasicMaterial({
+    const material = new THREE.MeshLambertMaterial({
       map: texture
     });
     const sphere = new THREE.Mesh(geometry, material);
@@ -174,8 +208,12 @@ class Globe extends Component {
     this.material = material
     this.sphere = sphere
 
+
+    /*
     // array of random colors to fill in each line. 
     const colors = ['red', 'blue', 'yellow', 'green', 'white', 'pink']
+    */
+
 
     // initial test data to populate lines
 
@@ -204,7 +242,7 @@ class Globe extends Component {
       var loader = new THREE.FontLoader();
 
       // load in spacex/data
-      loader.load('/spacex/data', function (font) {
+      loader.load('/spacex/data', font => {
 
         for (var j = 0; j < gps.length; j++) {
 
@@ -330,10 +368,9 @@ class Globe extends Component {
 
 
         } // END FOR LOOP
-
       }); // END LOADER.LOAD FUNCTION
-
     }); // END GET LAUNCHES FUNCTION
+    
 
 
     /*
@@ -417,8 +454,10 @@ class Globe extends Component {
   // animate function that renders all scenes and has earth object auto rotate
   animate() {
     // right now no rotation since on auto rotate the line objects do not rotate with earth
-    this.sphere.rotation.x += 0.00
-    this.sphere.rotation.y += 0.00
+    // this.line.rotation.x += 0.001;
+    // this.line.rotation.y += 0.003;
+    this.sphere.rotation.x += 0.001;
+    this.sphere.rotation.y += 0.003;
     this.renderScene()
     this.frameId = window.requestAnimationFrame(this.animate)
   }
