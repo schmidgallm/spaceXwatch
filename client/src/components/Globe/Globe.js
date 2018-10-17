@@ -390,7 +390,7 @@ class Globe extends Component {
 
     // init directional light (mimicks sun light)
     var dirLight;
-    dirLight = new THREE.DirectionalLight(0xffffff, 1);
+    dirLight = new THREE.DirectionalLight(0xffffff, 2);
     dirLight.position.set(1, 1, 1).normalize();
     dirLight.target = sphere;
     ringArray.forEach(ringObj => {
