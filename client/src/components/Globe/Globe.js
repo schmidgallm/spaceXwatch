@@ -3,14 +3,17 @@ import React, {
 } from 'react';
 import API from '../../utils/API';
 import './Globe.css';
-import './earthTexture.jpg';
 import * as THREE from 'three';
 import {
   Object3D
 } from 'three';
-var OrbitControls = require('three-orbit-controls')(THREE)
+var OrbitControls = require('three-orbit-controls')(THREE);
 
-
+// init empty array to hold all line objects in
+// needs to be outside of react class so it can be global outside of component did mount function
+const objects = [];
+const ringArray = [];
+const stickArray = [];
 
 class Globe extends Component {
 
@@ -21,17 +24,9 @@ class Globe extends Component {
     this.stop = this.stop.bind(this);
     this.animate = this.animate.bind(this);
 
-    /*
-    this.state = {
-      name: '',
-      flightNumber: '',
-      flightYear: '',
-      image: '',
-      desc: ''
-    }
-    */
-
   }
+
+
 
   componentDidMount() {
 
@@ -97,11 +92,15 @@ class Globe extends Component {
     }
     loadRockets();
 
+    /*
+    // ---------------------------
+    // INIT CAMERA SETTINGS
+    // ---------------------------
+    */
+
     // set width and height of browser
     const width = window.innerWidth - 17;
     const height = window.innerHeight;
-    // incase we want to change images or have muliple in array hold image in variable
-    const img = 'https://www.eleusal.com/html5GlobeFiles/textures/land_ocean_ice_cloud_2048.jpg'
 
     // init scene and camera
     const scene = new THREE.Scene()
@@ -118,17 +117,7 @@ class Globe extends Component {
     // set size of renderer accoring to variable set above
     renderer.setSize(width, height);
 
-    /*
-    // ---------------------------
-    // INIT LIGHT SOURCE
-    // ---------------------------
-    */
 
-    var dirLight;
-
-    dirLight = new THREE.DirectionalLight( 0xffffff, 2);
-    dirLight.position.set(1, 1, 1).normalize();
-    scene.add(dirLight);
 
     /*
     // ---------------------------
@@ -180,27 +169,64 @@ class Globe extends Component {
     // ---------------------------
     */
 
+    /*
+    var geometry = new THREE.SphereGeometry(0.5, 32, 32)
+    var material = new THREE.MeshLambertMaterial()
+    var sphere = new THREE.Mesh(geometry, material)
+    material.map = THREE.TextureLoader().load('spacex/images/earth/earthmap1k.jpg')
+    material.bumpMap = THREE.TextureLoader().load('spacex/images/earth/earthbump1k.jpg')
+    material.bumpScale = 0.05
+    material.specularMap = THREE.TextureLoader().load('spacex/images/earth/earthspec1k.jpg')
+    material.specular = new THREE.Color('grey')
+    var geometry = new THREE.SphereGeometry(0.51, 32, 32)
+    const canvasCloud = THREE.TextureLoader().load('spacex/images/earth/earthCloudmaptrans.jpg')
+    var material = new THREE.MeshPhongMaterial({
+      map: new THREE.Texture(canvasCloud),
+      side: THREE.DoubleSide,
+      opacity: 0.8,
+      transparent: true,
+      depthWrite: false,
+    })
+    var cloudMesh = new THREE.Mesh(geometry, material)
+    sphere.add(cloudMesh)
+    */
+
+
+    // incase we want to change images or have muliple in array hold image in variable
+    // const mapImg = 'spacex/images/earth/map';
+    const mapImg = new THREE.TextureLoader().load('spacex/images/earth/map');
+    const bumpImg = new THREE.TextureLoader().load('spacex/images/earth/bump');
+    const specImg = new THREE.TextureLoader().load('spacex/images/earth/specular');
+    const canvasCloud = new THREE.TextureLoader().load('spacex/images/earth/cloud');
+    const trans = new THREE.TextureLoader().load('spacex/images/earth/trans');
     // create sphere geomerty and populate its texture with earth image stored in variable above
     const geometry = new THREE.SphereGeometry(5, 32, 32);
-    const texture = new THREE.TextureLoader().load(img);
-    // create a mesh lambert texture around earth
-    const sphereTexture = [
-      new THREE.MeshLambertMaterial({
-        map: new THREE.TextureLoader().load('./earthTexture.jpg')
-      })
-    ]
-    const material = new THREE.MeshLambertMaterial({
-      map: texture
-    });
+    // const texture = new THREE.TextureLoader().load(mapImg);
+    const material = new THREE.MeshPhongMaterial();
+    material.map = mapImg;
+    material.bumpMap = bumpImg;
+    // material.bumpScale = 0.05;
+    material.specularMap = specImg;
+    material.specular = new THREE.Color('grey')
     const sphere = new THREE.Mesh(geometry, material);
+
+   
+    var meshGeometry = new THREE.SphereGeometry(0.51, 32, 32)
+    var meshMaterial = new THREE.MeshPhongMaterial({
+      map: canvasCloud,
+      side: THREE.DoubleSide,
+      opacity: 0.8,
+      transparent: true,
+      depthWrite: false,
+    })
+    var cloudMesh = new THREE.Mesh(meshGeometry, meshMaterial)
+    sphere.add(cloudMesh)
 
     // add sphere(earth) to scene
     scene.add(sphere)
 
     // set camera position from viewscreen
     camera.position.z = 13;
-    scene.add(sphere);
-    // renderer.setClearColor('#191a1f');
 
     this.scene = scene
     this.camera = camera
@@ -210,31 +236,12 @@ class Globe extends Component {
 
 
     /*
-    // array of random colors to fill in each line. 
-    const colors = ['red', 'blue', 'yellow', 'green', 'white', 'pink']
-    */
-
-
-    // initial test data to populate lines
-
-    /*
-    const gps = [
-      { "name_e": "Phoenix", "latitude":33.4484, "longitude": -112.077019,"color": colors[Math.floor(Math.random() * colors.length)]},
-      { "name_e": "Leipzig", "latitude":51.339762, "longitude": 12.371358,"color": colors[Math.floor(Math.random() * colors.length)]},
-      { "name_e": "Leipzig", "latitude":100.339762, "longitude": 12.371358,"color": colors[Math.floor(Math.random() * colors.length)]},
-      { "name_e": "Leipzig", "latitude":-112.339762, "longitude": 54.371358,"color": colors[Math.floor(Math.random() * colors.length)]},
-      { "name_e": "Leipzig", "latitude":-51.339762, "longitude": -12.371358,"color": colors[Math.floor(Math.random() * colors.length)]},
-      { "name_e": "Leipzig", "latitude":51.339762, "longitude": -12.371358,"color": colors[Math.floor(Math.random() * colors.length)]},
-      { "name_e": "Leipzig", "latitude":125.339762, "longitude": 125.371358,"color": colors[Math.floor(Math.random() * colors.length)]},
-      { "name_e": "Leipzig", "latitude":19.339762, "longitude": -99.371358,"color": colors[Math.floor(Math.random() * colors.length)] },
-    ]
-    */
-
-    /*
     // ---------------------------
     // CREATING LINES FROM API DATA
     // ---------------------------
     */
+
+
 
     // Loop through getLaunces function which returns json from /spacex/data and create a line 
     API.getLaunches().then(rsp => {
@@ -246,32 +253,14 @@ class Globe extends Component {
 
         for (var j = 0; j < gps.length; j++) {
 
-          /*
-          var geometry = new THREE.RingBufferGeometry( .5, .4, 30, 30, 6, 6.3 );
-          var material = new THREE.MeshBasicMaterial( { color: 0xffffff, side: THREE.DoubleSide } );
-          var mesh = new THREE.Mesh( geometry, material );
-          scene.add( mesh );
-
-          const placeObjectOnPlanet = (mesh, lat, lon, radius) => {
-            var latRad = lat * (Math.PI / 180);
-            var lonRad = -lon * (Math.PI / 180);
-            mesh.position.set(
-                Math.cos(latRad) * Math.cos(lonRad) * radius,
-                Math.sin(latRad) * radius,
-                Math.cos(latRad) * Math.sin(lonRad) * radius
-            );
-            mesh.rotation.set(0.0, -lonRad, latRad - Math.PI * 0.5);
-        }
-
-        placeObjectOnPlanet(mesh, gps[j].lat, gps[j].lon, .5);
-        */
-
           // create new line for each iterator
           var material = new THREE.LineBasicMaterial({
             color: 'white',
             linewidth: 1, // cannot change :(
             name: gps[j].name,
           });
+
+
 
           var geometry = new THREE.Geometry();
           geometry.vertices.push(new THREE.Vector3(0, 0, 0));
@@ -313,15 +302,31 @@ class Globe extends Component {
           var geometry = new THREE.RingBufferGeometry(.2, .1, 30, 5, 6.3);
           var material = new THREE.MeshBasicMaterial({
             color: 'gold',
-            transparent: true,
-            wireframe: true,
-            opacity: .5,
+            transparent: false,
+            wireframe: false,
+            opacity: 1,
             side: THREE.DoubleSide
           });
-          var mesh = new THREE.Mesh(geometry, material);
-          mesh.position.set(0, 0, 5.5);
-          stick.add(mesh);
+          var ring = new THREE.Mesh(geometry, material);
+          ring.position.set(0, 0, 5.5);
 
+          // set same user data to rings since it is a child of the line
+          ring.userData = {
+            name: gps[j].name,
+            flightNumber: gps[j].flightNumber,
+            flightYear: gps[j].flightYear,
+            image: gps[j].image,
+            desc: gps[j].desc
+          };
+
+          // cast shadow to true to show shadow on earth surface
+          ring.castShadow = true;
+
+          // add ring as child to stick
+          stick.add(ring);
+
+          // push to global ringArray array so we can access them outside of component did mount function
+          ringArray.push(ring);
 
           // ---------------------------
           // OPTIONAL TEXT WITH LINE THAT WILL WRITE name_e AT END OF LINE:
@@ -370,7 +375,48 @@ class Globe extends Component {
         } // END FOR LOOP
       }); // END LOADER.LOAD FUNCTION
     }); // END GET LAUNCHES FUNCTION
-    
+
+
+    /*
+    // ---------------------------
+    // INIT LIGHT SOURCE AND SHADOWS
+    // ---------------------------
+    */
+
+   
+    // init shadowmaps
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFShadowMap;
+
+    // init directional light (mimicks sun light)
+    var dirLight;
+    dirLight = new THREE.DirectionalLight(0xffffff, 1);
+    dirLight.position.set(1, 1, 1).normalize();
+    dirLight.target = sphere;
+    ringArray.forEach(ringObj => {
+      dirLight.target = ringObj;
+    })
+
+
+    // init shadow controls on dirlight
+    dirLight.castShadow = true;
+    dirLight.shadow = new THREE.LightShadow(new THREE.PerspectiveCamera(100, 1, 500, 1000));
+    dirLight.shadow.bias = 0.001;
+    dirLight.shadow.mapSize.width = 2048 * 2;
+    dirLight.shadow.mapSize.height = 2048 * 2;
+
+    // add dirlight to scnee
+    scene.add(dirLight);
+
+    // set up sphere and rings to allow to cast shadows
+    sphere.castShadow = true;
+    ringArray.forEach(ringObj => {
+      ringObj.castShadow = true;
+    })
+
+    // init hemisphere light (puts a sort of gradient light over scene to give a hint of color in light source)
+    var hemisphereLight = new THREE.HemisphereLight(0xffffbb, 0x020251, .02);
+    scene.add(hemisphereLight);
 
 
     /*
@@ -382,7 +428,6 @@ class Globe extends Component {
 
     const projector = new THREE.Projector();
     const mouse2D = new THREE.Vector3(0, 10000, 0.5);
-    const objects = [];
     // event listener for each click on object
     document.addEventListener('click', onDocumentMouseClick, false);
 
@@ -451,12 +496,15 @@ class Globe extends Component {
     cancelAnimationFrame(this.frameId)
   }
 
+
   // animate function that renders all scenes and has earth object auto rotate
   animate() {
     // right now no rotation since on auto rotate the line objects do not rotate with earth
-    // this.line.rotation.x += 0.001;
-    // this.line.rotation.y += 0.003;
-    this.sphere.rotation.x += 0.001;
+    objects.forEach(object => {
+      object.rotation.y += 0.003;
+      object.rotation.x += 0.000;
+    })
+    this.sphere.rotation.x += 0.000;
     this.sphere.rotation.y += 0.003;
     this.renderScene()
     this.frameId = window.requestAnimationFrame(this.animate)
@@ -465,7 +513,6 @@ class Globe extends Component {
   // render scene function wich renders the scene and camera
   renderScene() {
     this.renderer.render(this.scene, this.camera);
-
   }
 
   render() {
