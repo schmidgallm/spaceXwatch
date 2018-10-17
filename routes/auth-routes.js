@@ -7,7 +7,16 @@ module.exports = function(app,passport,express){
 			 { successRedirect: '/',
 			   failureRedirect: '/signin'}
 			 ));
-			 
+
+/*
+	app.post('/signup', (req, res) => {
+		console.log(req.body);
+		res.send('sent')
+	})
+	*/
+	app.get('/signin', (req, res) => {
+		res.send('signin!!!')
+	})
 			
 	app.post('/signup', passport.authenticate('local-signup',  
 			 { successRedirect: '/', 
@@ -42,11 +51,14 @@ module.exports = function(app,passport,express){
 		 }
 	});*/
 
-	app.get('/session',  function(req,res){
-
+	app.get('/session', function(req,res){
 		//for testing
-		res.send(req.user);
+		res.json(req.user);
 
+	});
+	
+	app.get('/himom', function (req, res) {
+		res.send("himom");
 	});
 
 

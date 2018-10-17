@@ -4,11 +4,32 @@ import axios from 'axios';
 // export all api calls
 export default {
 
-    getArticles: () => {
-        return axios.get('/nyt/spacex');
+  getLaunches: () => {
+        return axios.get('/spacex/data')
+            
     },
+	
+	signUp: (data) => {
+		return axios.post('/signup', data)
+	},
+	
+	signIn: (data) => {
+		return axios.post('/signin', data)
+	},
+	
+	session: () => {
+		return axios.get('/session');
+	},
+	
+	createGeoDataSet: () => {
+		return axios.get('/creategeodataset');
+	},
+	
+	addSpaceXData: () => {
+		return axios.get('/addspacexdata');
+	},
 
-    getRockets: () => {
-        return axios.get('/spacex/data');
-    }
+	getImage: () => {
+		return axios.get('spacex/images');
+	}
 }
