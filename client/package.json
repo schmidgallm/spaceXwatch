@@ -6,6 +6,7 @@
   "dependencies": {
     "@types/three": "^0.92.23",
     "axios": "^0.18.0",
+    "postprocessing": "^5.0.0",
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
     "react-geocode": "^0.1.2",
@@ -13,7 +14,9 @@
     "react-scripts": "1.1.5",
     "three": "^0.97.0",
     "three-addons": "^1.2.0",
-    "three-orbit-controls": "^82.1.0"
+    "three-effectcomposer": "^0.0.1",
+    "three-orbit-controls": "^82.1.0",
+    "three.meshline": "^1.1.0"
   },
   "scripts": {
     "start": "react-scripts start",
