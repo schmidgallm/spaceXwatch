@@ -23,7 +23,7 @@ module.exports = function(app) {
 	});
 
 	app.get('/spacex/images', (req, res) => {
-		res.sendFile(path.resolve('routes/api/stars.png'));
+		res.sendFile(path.resolve('routes/api/stars.jpg'));
 	});
 
 	app.get('/spacex/images/earth/map', (req, res) => {
@@ -56,5 +56,9 @@ module.exports = function(app) {
 
 	app.get('/spacex/images/moon', (req, res) => {
 		res.sendFile(path.resolve('routes/api/moon.jpg'));
+	});
+
+	app.get('/spacex/images/moon/bump', (req, res) => {
+		res.sendFile(path.resolve('routes/api/moonbump.jpg'));
 	});
 }
