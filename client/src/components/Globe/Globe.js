@@ -126,40 +126,23 @@ class Globe extends Component {
     */
 
     // load texture into variable so its loaded before we call the box
-    const boxTexture = new THREE.TextureLoader().load('spacex/images');
-    // const sunTexture = new THREE.TextureLoader().load('spacex/images/sun');
-    const geomerty = new THREE.BoxBufferGeometry(100, 100, 100, 100);
+    const sphereTexture = new THREE.TextureLoader().load('spacex/images');
+    // const moonTexture = new THREE.TextureLoader().load('spacex/images/moon');
+    const geomerty = new THREE.SphereBufferGeometry(100, 100, 100);
 
     // inti box material for 6 side cube
-    const boxMaterial = [
+    const sphereMaterial = [
       new THREE.MeshBasicMaterial({
-        map: boxTexture,
-        side: THREE.DoubleSide
-      }),
-      new THREE.MeshBasicMaterial({
-        map: boxTexture,
-        side: THREE.DoubleSide
-      }),
-      new THREE.MeshBasicMaterial({
-        map: boxTexture,
-        side: THREE.DoubleSide
-      }),
-      new THREE.MeshBasicMaterial({
-        map: boxTexture,
-        side: THREE.DoubleSide
-      }),
-      new THREE.MeshBasicMaterial({
-        map: boxTexture,
-        side: THREE.DoubleSide
-      }),
-      new THREE.MeshBasicMaterial({
-        map: boxTexture,
-        side: THREE.DoubleSide
+        map: sphereTexture,
+        side: THREE.BackSide,
+        opacity: 1,
+        shininess: 40,
+        blending: new THREE.AdditiveBlending
       }),
     ];
 
     // pull geometry and boxmaterial into variable and add to scene
-    const mesh = new THREE.Mesh(geomerty, boxMaterial);
+    const mesh = new THREE.Mesh(geomerty, sphereMaterial);
     scene.add(mesh);
 
 
@@ -207,17 +190,17 @@ class Globe extends Component {
     material.bumpMap = bumpImg;
     // material.bumpScale = 0.05;
     material.specularMap = specImg;
-    material.specular = new THREE.Color('grey')
+    material.specular = new THREE.Color('0xffffff')
     const sphere = new THREE.Mesh(geometry, material);
 
    
-    var meshGeometry = new THREE.SphereGeometry(0.51, 32, 32)
+    var meshGeometry = new THREE.SphereGeometry(5,32,32)
     var meshMaterial = new THREE.MeshPhongMaterial({
-      map: canvasCloud,
+      map: (canvasCloud, trans),
       side: THREE.DoubleSide,
-      opacity: 0.8,
+      opacity: 0.2,
       transparent: true,
-      depthWrite: false,
+      depthWrite: true,
     })
     var cloudMesh = new THREE.Mesh(meshGeometry, meshMaterial)
     sphere.add(cloudMesh)
@@ -228,11 +211,39 @@ class Globe extends Component {
     // set camera position from viewscreen
     camera.position.z = 13;
 
-    this.scene = scene
-    this.camera = camera
-    this.renderer = renderer
-    this.material = material
-    this.sphere = sphere
+    /*
+    // ---------------------------
+    // MOON OBJECT CREATION
+    // ---------------------------
+    */
+
+    // init texture map of moon
+    const moonImg = new THREE.TextureLoader().load('spacex/images/moon');
+    // init sphere geometry for moon
+    const moonGeometry = new THREE.SphereGeometry(5, 5, 5);
+    // Use mesh phong material so it gives off reflectivity and glow
+    const moonMaterial = new THREE.MeshPhongMaterial({
+      map: moonImg
+    });
+    const moon = new THREE.Mesh(moonGeometry, moonMaterial);
+    // moon.vertices.push(new THREE.Vector3(1,1,1));
+    scene.add(moon);
+    // set position of moon
+    moon.position.set(20,10,-40);
+    // set shadowing of moon to false
+    moon.castShadow = false;
+    // rotate moon around earth. need to set up moon as child to earth
+    var moonParent = sphere;
+    sphere.add(moon)
+
+
+
+    this.scene = scene;
+    this.camera = camera;
+    this.renderer = renderer;
+    this.material = material;
+    this.sphere = sphere;
+    this.moon = moon;
 
 
     /*
@@ -295,6 +306,7 @@ class Globe extends Component {
           scene.add(parent);
 
           var stick = new THREE.Object3D();
+          stick.castShadow = true;
           var point = new THREE.Vector3(5, 0, 0);
           stick.lookAt(point);
           parent.add(stick);
@@ -329,7 +341,7 @@ class Globe extends Component {
           ringArray.push(ring);
 
           // ---------------------------
-          // OPTIONAL TEXT WITH LINE THAT WILL WRITE name_e AT END OF LINE:
+          // OPTIONAL TEXT WITH LINE THAT WILL WRITE FLIGHT NAME AT END OF LINE:
           // ---------------------------
           /*
               let xMid;
@@ -348,7 +360,7 @@ class Globe extends Component {
               } );
   
               var message = "";
-              var shapes = font.generateShapes( gps[j].name, 0.2, 2 );
+              var shapes = font.generateShapes( gps[j].flightName, 0.2, 2 );
               var geometryTwo = new THREE.ShapeGeometry( shapes );
               geometryTwo.computeBoundingBox();
               xMid = -0.5 * ( geometryTwo.boundingBox.max.x - geometryTwo.boundingBox.min.x );
@@ -383,19 +395,23 @@ class Globe extends Component {
     // ---------------------------
     */
 
+    console.log(stickArray);
    
     // init shadowmaps
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFShadowMap;
 
-    // init directional light (mimicks sun light)
+    // init directional light (mimicks moon light)
     var dirLight;
     dirLight = new THREE.DirectionalLight(0xffffff, 2);
     dirLight.position.set(1, 1, 1).normalize();
     dirLight.target = sphere;
     ringArray.forEach(ringObj => {
       dirLight.target = ringObj;
-    })
+    });
+    stickArray.forEach(stickObj => {
+      stickObj.castShadow = true;
+    });
 
 
     // init shadow controls on dirlight
@@ -412,6 +428,9 @@ class Globe extends Component {
     sphere.castShadow = true;
     ringArray.forEach(ringObj => {
       ringObj.castShadow = true;
+    })
+    stickArray.forEach(stickObj => {
+      stickObj.castShadow = true;
     })
 
     // init hemisphere light (puts a sort of gradient light over scene to give a hint of color in light source)
@@ -504,6 +523,7 @@ class Globe extends Component {
       object.rotation.y += 0.003;
       object.rotation.x += 0.000;
     })
+    this.moon.rotation.y += 0.002;
     this.sphere.rotation.x += 0.000;
     this.sphere.rotation.y += 0.003;
     this.renderScene()

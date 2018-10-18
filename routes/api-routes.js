@@ -49,4 +49,12 @@ module.exports = function(app) {
 	app.get('/spacex/images/earth/trans', (req, res) => {
 		res.sendFile(path.resolve('routes/api/earthcloudmaptrans.jpg'));
 	});
+
+	app.get('/spacex/images/sun', (req, res) => {
+		res.sendFile(path.resolve('routes/api/sun.jpg'));
+	});
+
+	app.get('/spacex/images/moon', (req, res) => {
+		res.sendFile(path.resolve('routes/api/moon.jpg'));
+	});
 }
