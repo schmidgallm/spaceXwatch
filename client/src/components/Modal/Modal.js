@@ -1,15 +1,7 @@
 import React, {Component} from 'react';
 import './Modal.css'
 
-class Modal extends Component {
-
-    constructor(props) {
-        super(props)
-
-    }
-
-
-   
+class Modal extends Component {   
 
     render(){
         if(this.props.name) {
@@ -17,9 +9,10 @@ class Modal extends Component {
             <div className="modal">
                 <h2>{this.props.name}</h2>
                 <span><p id="flightNumber">Flight Number: {this.props.flightNumber}</p></span>
+                <hr />
                 <span><p id="flightYear">Flight Year: {this.props.flightYear}</p></span>
                 <div className="img-container">
-                    <img id="image" src={this.props.image} />
+                    <img id="image" src={this.props.image} alt={this.props.name} />
                 </div>
                 <p id="description">{this.props.desc}</p>   
             </div>
