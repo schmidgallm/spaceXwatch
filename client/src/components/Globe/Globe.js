@@ -117,6 +117,9 @@ class Globe extends Component {
     // set size of renderer accoring to variable set above
     renderer.setSize(width, height);
 
+    // set camera position from viewscreen
+    camera.position.z = 13;
+
 
 
     /*
@@ -128,7 +131,7 @@ class Globe extends Component {
     // load texture into variable so its loaded before we call the box
     const sphereTexture = new THREE.TextureLoader().load('spacex/images');
     // const moonTexture = new THREE.TextureLoader().load('spacex/images/moon');
-    const sphereGeomerty = new THREE.SphereGeometry(100, 100, 100);
+    const sphereGeomerty = new THREE.SphereGeometry(75, 75, 75);
     // create material using sphereTexture
     const sphereMaterial = new THREE.MeshBasicMaterial({
       map: sphereTexture,
@@ -145,29 +148,6 @@ class Globe extends Component {
     // EARTH OBJECT CREATION
     // ---------------------------
     */
-
-    /*
-    var geometry = new THREE.SphereGeometry(0.5, 32, 32)
-    var material = new THREE.MeshLambertMaterial()
-    var sphere = new THREE.Mesh(geometry, material)
-    material.map = THREE.TextureLoader().load('spacex/images/earth/earthmap1k.jpg')
-    material.bumpMap = THREE.TextureLoader().load('spacex/images/earth/earthbump1k.jpg')
-    material.bumpScale = 0.05
-    material.specularMap = THREE.TextureLoader().load('spacex/images/earth/earthspec1k.jpg')
-    material.specular = new THREE.Color('grey')
-    var geometry = new THREE.SphereGeometry(0.51, 32, 32)
-    const canvasCloud = THREE.TextureLoader().load('spacex/images/earth/earthCloudmaptrans.jpg')
-    var material = new THREE.MeshPhongMaterial({
-      map: new THREE.Texture(canvasCloud),
-      side: THREE.DoubleSide,
-      opacity: 0.8,
-      transparent: true,
-      depthWrite: false,
-    })
-    var cloudMesh = new THREE.Mesh(geometry, material)
-    sphere.add(cloudMesh)
-    */
-
 
     // incase we want to change images or have muliple in array hold image in variable
     // const mapImg = 'spacex/images/earth/map';
@@ -202,8 +182,7 @@ class Globe extends Component {
     // add sphere(earth) to scene
     scene.add(sphere)
 
-    // set camera position from viewscreen
-    camera.position.z = 13;
+    
 
     /*
     // ---------------------------
@@ -211,14 +190,18 @@ class Globe extends Component {
     // ---------------------------
     */
 
-    // init texture map of moon
+    // init texture map of moon and bump map
     const moonImg = new THREE.TextureLoader().load('spacex/images/moon');
+    const moonBumpImg = new THREE.TextureLoader().load('spacex/images/moon/bump');
     // init sphere geometry for moon
-    const moonGeometry = new THREE.SphereGeometry(5, 5, 5);
+    const moonGeometry = new THREE.SphereGeometry(2.5,32,32);
     // Use mesh phong material so it gives off reflectivity and glow
     const moonMaterial = new THREE.MeshPhongMaterial({
-      map: moonImg
+      map: moonImg,
+      bumpMap: moonBumpImg,
+      bumpScale: .5
     });
+    // material.bumpMap = moonBumpImg;
     const moon = new THREE.Mesh(moonGeometry, moonMaterial);
     // moon.vertices.push(new THREE.Vector3(1,1,1));
     scene.add(moon);
@@ -226,8 +209,7 @@ class Globe extends Component {
     moon.position.set(20,10,-40);
     // set shadowing of moon to false
     moon.castShadow = false;
-    // rotate moon around earth. need to set up moon as child to earth
-    var moonParent = sphere;
+    // rotate moon around earth.
     sphere.add(moon)
 
 
@@ -245,8 +227,6 @@ class Globe extends Component {
     // CREATING LINES FROM API DATA
     // ---------------------------
     */
-
-
 
     // Loop through getLaunces function which returns json from /spacex/data and create a line 
     API.getLaunches().then(rsp => {
@@ -305,15 +285,15 @@ class Globe extends Component {
           stick.lookAt(point);
           parent.add(stick);
 
-          var geometry = new THREE.RingBufferGeometry(.2, .1, 30, 5, 6.3);
-          var material = new THREE.MeshBasicMaterial({
+          var ringGeometry = new THREE.RingBufferGeometry(.2, .1, 30, 5, 6.3);
+          var ringMaterial = new THREE.MeshBasicMaterial({
             color: 'gold',
             transparent: false,
             wireframe: false,
             opacity: 1,
             side: THREE.DoubleSide
           });
-          var ring = new THREE.Mesh(geometry, material);
+          var ring = new THREE.Mesh(ringGeometry, ringMaterial);
           ring.position.set(0, 0, 5.5);
 
           // set same user data to rings since it is a child of the line
@@ -409,7 +389,7 @@ class Globe extends Component {
 
 
     // init shadow controls on dirlight
-    dirLight.castShadow = true;
+    dirLight.castShadow = false;
     dirLight.shadow = new THREE.LightShadow(new THREE.PerspectiveCamera(100, 1, 500, 1000));
     dirLight.shadow.bias = 0.001;
     dirLight.shadow.mapSize.width = 2048 * 2;
@@ -512,12 +492,13 @@ class Globe extends Component {
 
   // animate function that renders all scenes and has earth object auto rotate
   animate() {
-    // right now no rotation since on auto rotate the line objects do not rotate with earth
+    // set rotations for all objects. set x axis to 0 just becuase i think it looks cooler without only y axis rotation
     objects.forEach(object => {
       object.rotation.y += 0.003;
       object.rotation.x += 0.000;
     })
-    this.moon.rotation.y += 0.002;
+    this.moon.rotation.x += 0.000;
+    this.moon.rotation.y += 0.001;
     this.sphere.rotation.x += 0.000;
     this.sphere.rotation.y += 0.003;
     this.renderScene()
