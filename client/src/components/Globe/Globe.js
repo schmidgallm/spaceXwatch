@@ -203,7 +203,6 @@ class Globe extends Component {
     });
     // material.bumpMap = moonBumpImg;
     const moon = new THREE.Mesh(moonGeometry, moonMaterial);
-    // moon.vertices.push(new THREE.Vector3(1,1,1));
     scene.add(moon);
     // set position of moon
     moon.position.set(20,10,-40);
