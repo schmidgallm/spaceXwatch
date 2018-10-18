@@ -128,21 +128,15 @@ class Globe extends Component {
     // load texture into variable so its loaded before we call the box
     const sphereTexture = new THREE.TextureLoader().load('spacex/images');
     // const moonTexture = new THREE.TextureLoader().load('spacex/images/moon');
-    const geomerty = new THREE.SphereBufferGeometry(100, 100, 100);
-
-    // inti box material for 6 side cube
-    const sphereMaterial = [
-      new THREE.MeshBasicMaterial({
-        map: sphereTexture,
-        side: THREE.BackSide,
-        opacity: 1,
-        shininess: 40,
-        blending: new THREE.AdditiveBlending
-      }),
-    ];
-
-    // pull geometry and boxmaterial into variable and add to scene
-    const mesh = new THREE.Mesh(geomerty, sphereMaterial);
+    const sphereGeomerty = new THREE.SphereGeometry(100, 100, 100);
+    // create material using sphereTexture
+    const sphereMaterial = new THREE.MeshBasicMaterial({
+      map: sphereTexture,
+      side: THREE.BackSide
+    });
+    // create mesh based on geometry and material
+    const mesh = new THREE.Mesh(sphereGeomerty, sphereMaterial )
+    // add stars skybox to scene
     scene.add(mesh);
 
 
