@@ -23,6 +23,12 @@ class Globe extends Component {
     this.start = this.start.bind(this);
     this.stop = this.stop.bind(this);
     this.animate = this.animate.bind(this);
+	
+	this.state = {
+		toggle_rotate: true,
+		toggle_moon: false,
+		toggle_sun: false
+	};
 
   }
 
@@ -32,7 +38,7 @@ class Globe extends Component {
 
     // set timout function increases earth size after 9 seconds.
     // wait 9 seconds becuase beginning text animation on load takes about 8 seconds
-    setTimeout(() => {
+    /*setTimeout(() => {
       camera.position.z = 12;
     }, 8250);
     setTimeout(() => {
@@ -70,7 +76,7 @@ class Globe extends Component {
     }, 8937);
     setTimeout(() => {
       camera.position.z = 9;
-    }, 9000);
+    }, 9000);*/
 
     // load rockets function finds the api data and logs it
     // need it here and when rendering lines becuase it will also populate api from databse if no data exists
@@ -140,7 +146,7 @@ class Globe extends Component {
     // create mesh based on geometry and material
     const mesh = new THREE.Mesh(sphereGeomerty, sphereMaterial )
     // add stars skybox to scene
-    scene.add(mesh);
+//_______________________________________________________________________________________________________//////scene.add(mesh);
 
 
     /*
@@ -164,8 +170,12 @@ class Globe extends Component {
     material.bumpMap = bumpImg;
     // material.bumpScale = 0.05;
     material.specularMap = specImg;
-    material.specular = new THREE.Color('0xffffff')
-    const sphere = new THREE.Mesh(geometry, material);
+    material.specular = new THREE.Color('0xffffff');
+	
+	
+	var iskyfireMaterial = new THREE.MeshBasicMaterial({ map: mapImg });
+	//const sphere = new THREE.Mesh(geometry, material);
+	const sphere = new THREE.Mesh(geometry, iskyfireMaterial);
 
    
     var meshGeometry = new THREE.SphereGeometry(5,32,32)
@@ -176,13 +186,40 @@ class Globe extends Component {
       transparent: true,
       depthWrite: true,
     })
-    var cloudMesh = new THREE.Mesh(meshGeometry, meshMaterial)
-    sphere.add(cloudMesh)
+
+	
+    //var cloudMesh = new THREE.Mesh(meshGeometry, meshMaterial)
+    //sphere.add(cloudMesh)
 
     // add sphere(earth) to scene
     scene.add(sphere)
 
-    
+    // set camera position from viewscreen
+    camera.position.z = 13;
+	
+	
+	/*
+    // ---------------------------
+    // NEW SPACE CREATION
+    // ---------------------------
+    */
+	
+	//Space background is a large sphere
+  var spacetex = THREE.ImageUtils.loadTexture("/spacex/images/newspace");
+  var spacesphereGeo = new THREE.SphereGeometry(20,20,20);
+  var spacesphereMat = new THREE.MeshBasicMaterial();
+  spacesphereMat.map = spacetex;
+
+  var spacesphere = new THREE.Mesh(spacesphereGeo,spacesphereMat);
+  
+  //spacesphere needs to be double sided as the camera is within the spacesphere
+  spacesphere.material.side = THREE.DoubleSide;
+  
+  spacesphere.material.map.wrapS = THREE.RepeatWrapping; 
+  spacesphere.material.map.wrapT = THREE.RepeatWrapping;
+  spacesphere.material.map.repeat.set( 5, 3);
+  
+  scene.add(spacesphere);
 
     /*
     // ---------------------------
@@ -203,13 +240,15 @@ class Globe extends Component {
     });
     // material.bumpMap = moonBumpImg;
     const moon = new THREE.Mesh(moonGeometry, moonMaterial);
-    scene.add(moon);
+    // moon.vertices.push(new THREE.Vector3(1,1,1));
+//_______________________________________________________________________________________________________//////scene.add(moon);
     // set position of moon
-    moon.position.set(20,10,-40);
+    moon.position.set(20,0,0);
     // set shadowing of moon to false
     moon.castShadow = false;
-    // rotate moon around earth.
-    sphere.add(moon)
+    // rotate moon around earth. need to set up moon as child to earth
+    var moonParent = sphere;
+//_______________________________________________________________________________________________________//////sphere.add(moon)
 
 
 
@@ -228,12 +267,130 @@ class Globe extends Component {
     */
 
     // Loop through getLaunces function which returns json from /spacex/data and create a line 
-    API.getLaunches().then(rsp => {
+	
+
+   
+
+
+    /*
+    // ---------------------------
+    // INIT LIGHT SOURCE AND SHADOWS
+    // ---------------------------
+    */
+
+    console.log(stickArray);
+   
+    // init shadowmaps
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFShadowMap;
+
+    // init directional light (mimicks moon light)
+    var dirLight;
+    dirLight = new THREE.DirectionalLight(0xffffff, 2);
+    dirLight.position.set(1, 1, 1).normalize();
+    dirLight.target = sphere;
+    ringArray.forEach(ringObj => {
+      dirLight.target = ringObj;
+    });
+    stickArray.forEach(stickObj => {
+      stickObj.castShadow = true;
+    });
+
+
+    // init shadow controls on dirlight
+    dirLight.castShadow = true;
+    dirLight.shadow = new THREE.LightShadow(new THREE.PerspectiveCamera(100, 1, 500, 1000));
+    dirLight.shadow.bias = 0.001;
+    dirLight.shadow.mapSize.width = 2048 * 2;
+    dirLight.shadow.mapSize.height = 2048 * 2;
+
+    // add dirlight to scnee
+    scene.add(dirLight);
+
+    // set up sphere and rings to allow to cast shadows
+    sphere.castShadow = true;
+    ringArray.forEach(ringObj => {
+      ringObj.castShadow = true;
+    })
+    stickArray.forEach(stickObj => {
+      stickObj.castShadow = true;
+    })
+
+    // init hemisphere light (puts a sort of gradient light over scene to give a hint of color in light source)
+    var hemisphereLight = new THREE.HemisphereLight(0xffffbb, 0x020251, .02);
+    scene.add(hemisphereLight);
+
+
+    /*
+    //---------------------------
+    // CLICK EVENTS
+    //---------------------------
+    */
+
+
+    const projector = new THREE.Projector();
+    const mouse2D = new THREE.Vector3(0, 10000, 0.5);
+    // event listener for each click on object
+    document.addEventListener('click', onDocumentMouseClick, false);
+
+    // handle callback function that updates props on click
+    const handleChangeUserDataLineObject = (name, flightNumber, flightYear, image, desc) => {
+      this.props.cbProp({
+        name: name,
+        flightNumber: flightNumber,
+        flightYear: flightYear,
+        image: image,
+        desc: desc,
+      });
+    }
+
+    function onDocumentMouseClick(event) {
+      // need to prevent any sort of default behavior
+      event.preventDefault();
+      // get the x and y coords of mouse
+      mouse2D.x = (event.clientX / window.innerWidth) * 2 - 1;
+      mouse2D.y = -(event.clientY / window.innerHeight) * 2 + 1;
+      var vector = new THREE.Vector3(mouse2D.x, mouse2D.y, 0.5);
+      projector.unprojectVector(vector, camera);
+      // start the raycaster -- esentially it projects a ray from position of click and see if it intersects with any objects in its path
+      var raycaster = new THREE.Raycaster(camera.position, vector.sub(camera.position).normalize());
+      var intersects = raycaster.intersectObjects(objects);
+      if (intersects.length > 0) {
+        var firstIntersectedObject = intersects[0];
+        // this will give you the first intersected Object if there are multiple.
+        console.log(firstIntersectedObject.object.userData);
+        console.log(firstIntersectedObject.object.userData.name);
+        handleChangeUserDataLineObject(firstIntersectedObject.object.userData.name, firstIntersectedObject.object.userData.flightNumber, firstIntersectedObject.object.userData.flightYear, firstIntersectedObject.object.userData.image, firstIntersectedObject.object.userData.desc);
+      }
+    }
+
+    // on mount append all renderes to domElement which is the canvas
+    this.mount.appendChild(this.renderer.domElement)
+    this.start()
+
+    // init orbit controls. this allows you to pan the object(earth) around
+    OrbitControls = new OrbitControls(this.camera, this.renderer.domElement);
+
+    // listen for resize of browser so earth will always be in correct aspect ratio
+    window.addEventListener('resize', () => {
+      const width = window.innerWidth - 17;
+      const height = window.innerHeight;
+      renderer.setSize(width, height);
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
+    });
+  }
+  
+  spaceXData = () => {
+	   API.getLaunches().then(rsp => {
       const gps = rsp.data;
       var loader = new THREE.FontLoader();
 
       // load in spacex/data
       loader.load('/spacex/data', font => {
+		  
+		  this.sphere.rotation.x = 0;
+		  this.sphere.rotation.y = 0;
 
         for (var j = 0; j < gps.length; j++) {
 
@@ -255,7 +412,7 @@ class Globe extends Component {
 
           // convert each line from deg to rad so it can init into lat and long coords
           line.rotation.z = THREE.Math.degToRad(gps[j].lat);
-          line.rotation.y = THREE.Math.degToRad(gps[j].lon);
+          line.rotation.y = THREE.Math.degToRad((gps[j].lon) * -1);
 
           // userData is native object in three js to hold custom data for each object
           // init userData object and hold each objects data
@@ -268,7 +425,7 @@ class Globe extends Component {
           };
 
           // add line to scene
-          scene.add(line);
+          this.scene.add(line);
 
           // create empty array to hold all line objects and push each line into objects
           // will need this for click events
@@ -276,7 +433,7 @@ class Globe extends Component {
           objects.push(line);
 
           var parent = line;
-          scene.add(parent);
+          this.scene.add(parent);
 
           var stick = new THREE.Object3D();
           stick.castShadow = true;
@@ -360,115 +517,7 @@ class Globe extends Component {
         } // END FOR LOOP
       }); // END LOADER.LOAD FUNCTION
     }); // END GET LAUNCHES FUNCTION
-
-
-    /*
-    // ---------------------------
-    // INIT LIGHT SOURCE AND SHADOWS
-    // ---------------------------
-    */
-
-    console.log(stickArray);
-   
-    // init shadowmaps
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFShadowMap;
-
-    // init directional light (mimicks moon light)
-    var dirLight;
-    dirLight = new THREE.DirectionalLight(0xffffff, 2);
-    dirLight.position.set(1, 1, 1).normalize();
-    dirLight.target = sphere;
-    ringArray.forEach(ringObj => {
-      dirLight.target = ringObj;
-    });
-    stickArray.forEach(stickObj => {
-      stickObj.castShadow = true;
-    });
-
-
-    // init shadow controls on dirlight
-    dirLight.castShadow = false;
-    dirLight.shadow = new THREE.LightShadow(new THREE.PerspectiveCamera(100, 1, 500, 1000));
-    dirLight.shadow.bias = 0.001;
-    dirLight.shadow.mapSize.width = 2048 * 2;
-    dirLight.shadow.mapSize.height = 2048 * 2;
-
-    // add dirlight to scnee
-    scene.add(dirLight);
-
-    // set up sphere and rings to allow to cast shadows
-    sphere.castShadow = true;
-    ringArray.forEach(ringObj => {
-      ringObj.castShadow = true;
-    })
-    stickArray.forEach(stickObj => {
-      stickObj.castShadow = true;
-    })
-
-    // init hemisphere light (puts a sort of gradient light over scene to give a hint of color in light source)
-    var hemisphereLight = new THREE.HemisphereLight(0xffffbb, 0x020251, .02);
-    scene.add(hemisphereLight);
-
-
-    /*
-    //---------------------------
-    // CLICK EVENTS
-    //---------------------------
-    */
-
-
-    const projector = new THREE.Projector();
-    const mouse2D = new THREE.Vector3(0, 10000, 0.5);
-    // event listener for each click on object
-    document.addEventListener('click', onDocumentMouseClick, false);
-
-    // handle callback function that updates props on click
-    const handleChangeUserDataLineObject = (name, flightNumber, flightYear, image, desc) => {
-      this.props.cbProp({
-        name: name,
-        flightNumber: flightNumber,
-        flightYear: flightYear,
-        image: image,
-        desc: desc,
-      });
-    }
-
-    function onDocumentMouseClick(event) {
-      // need to prevent any sort of default behavior
-      event.preventDefault();
-      // get the x and y coords of mouse
-      mouse2D.x = (event.clientX / window.innerWidth) * 2 - 1;
-      mouse2D.y = -(event.clientY / window.innerHeight) * 2 + 1;
-      var vector = new THREE.Vector3(mouse2D.x, mouse2D.y, 0.5);
-      projector.unprojectVector(vector, camera);
-      // start the raycaster -- esentially it projects a ray from position of click and see if it intersects with any objects in its path
-      var raycaster = new THREE.Raycaster(camera.position, vector.sub(camera.position).normalize());
-      var intersects = raycaster.intersectObjects(objects);
-      if (intersects.length > 0) {
-        var firstIntersectedObject = intersects[0];
-        // this will give you the first intersected Object if there are multiple.
-        console.log(firstIntersectedObject.object.userData);
-        console.log(firstIntersectedObject.object.userData.name);
-        handleChangeUserDataLineObject(firstIntersectedObject.object.userData.name, firstIntersectedObject.object.userData.flightNumber, firstIntersectedObject.object.userData.flightYear, firstIntersectedObject.object.userData.image, firstIntersectedObject.object.userData.desc);
-      }
-    }
-
-    // on mount append all renderes to domElement which is the canvas
-    this.mount.appendChild(this.renderer.domElement)
-    this.start()
-
-    // init orbit controls. this allows you to pan the object(earth) around
-    OrbitControls = new OrbitControls(this.camera, this.renderer.domElement);
-
-    // listen for resize of browser so earth will always be in correct aspect ratio
-    window.addEventListener('resize', () => {
-      const width = window.innerWidth - 17;
-      const height = window.innerHeight;
-      renderer.setSize(width, height);
-      camera.aspect = width / height;
-      camera.updateProjectionMatrix();
-    });
+	
   }
 
   // on willunmount this will stop all animations and remove all rendering from dom element
@@ -490,16 +539,18 @@ class Globe extends Component {
 
 
   // animate function that renders all scenes and has earth object auto rotate
-  animate() {
-    // set rotations for all objects. set x axis to 0 just becuase i think it looks cooler without only y axis rotation
-    objects.forEach(object => {
-      object.rotation.y += 0.003;
-      object.rotation.x += 0.000;
-    })
-    this.moon.rotation.x += 0.000;
-    this.moon.rotation.y += 0.001;
-    this.sphere.rotation.x += 0.000;
-    this.sphere.rotation.y += 0.003;
+  animate = () => {
+    // right now no rotation since on auto rotate the line objects do not rotate with earth
+	if(this.state.toggle_rotate)
+	{
+		objects.forEach(object => {
+		  object.rotation.y += 0.003;
+		  object.rotation.x += 0.000;
+		})
+		this.moon.rotation.y += 0.002;
+		this.sphere.rotation.x += 0.000;
+		this.sphere.rotation.y += 0.003;
+	}
     this.renderScene()
     this.frameId = window.requestAnimationFrame(this.animate)
   }
@@ -508,9 +559,70 @@ class Globe extends Component {
   renderScene() {
     this.renderer.render(this.scene, this.camera);
   }
+  
+  toggleSun = () =>
+  {
+	  this.setState(state => ({
+		toggle_sun: !state.toggle_sun
+	}));
+	
+	if(!this.state.toggle_sun)
+	{
+		const mapImg = new THREE.TextureLoader().load('spacex/images/earth/map');
+		const bumpImg = new THREE.TextureLoader().load('spacex/images/earth/bump');
+		const specImg = new THREE.TextureLoader().load('spacex/images/earth/specular');
+		
+		const material = new THREE.MeshPhongMaterial();
+		material.map = mapImg;
+		material.bumpMap = bumpImg;
+		material.specularMap = specImg;
+		material.specular = new THREE.Color('0xffffff')
+		
+		this.sphere.material = material;
+		this.sphere.material.needsUpdate = true;
+	}
+	else
+	{
+		const mapImg = new THREE.TextureLoader().load('spacex/images/earth/map');
+		var iskyfireMaterial = new THREE.MeshBasicMaterial({ map: mapImg });
+		
+		this.sphere.material = iskyfireMaterial;
+		this.sphere.material.needsUpdate = true;
+	}
+  }
+  
+   toggleMoon = () =>
+  {
+	  this.setState(state => ({
+		toggle_moon: !state.toggle_moon
+	}));
+	
+	if(!this.state.toggle_moon)
+	{
+
+	    this.scene.add(this.moon);
+	    this.sphere.add(this.moon);
+	}
+	else
+	{
+	    this.sphere.remove(this.moon);
+		this.scene.remove(this.moon);
+	}
+  }
+  
+   toggleRotate = () =>
+  {
+	  this.setState(state => ({
+		toggle_rotate: !state.toggle_rotate
+	}));
+	
+	console.log(this.state.toggle_rotate);
+  }
 
   render() {
-    return ( <
+    return ( 
+	<div>
+	<
       div className = {
         this.props.panelShown ? "globeDiv globeDiv__panelShown" : "globeDiv"
       }
@@ -520,6 +632,16 @@ class Globe extends Component {
         }
       }
       />
+	 <div id="control-panel" data-shown={this.props.controlPanel} >
+		Choose a dataset:
+		<div onClick={this.spaceXData} className="control-toggle">SpaceX API</div>
+		<br/>
+		Controls:
+		<div onClick={this.toggleSun} className="control-toggle"> Earth Lighting: {this.state.toggle_sun.toString()}</div>
+		<div onClick={this.toggleMoon} className="control-toggle"> Moon: {this.state.toggle_moon.toString()}</div>
+		<div onClick={this.toggleRotate} className="control-toggle"> Auto-Rotate: {this.state.toggle_rotate.toString()}</div>
+	 </div>
+	 </div>
     )
   }
 }

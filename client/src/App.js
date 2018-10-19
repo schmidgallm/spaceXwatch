@@ -8,6 +8,7 @@ import TopButton from './components/TopButton/TopButton';
 import LoginPanel from './components/LoginPanel/LoginPanel';
 import Section from './components/Section/Section';
 import './app.css';
+import API from './utils/API';
 
 
 class App extends Component {
@@ -17,7 +18,10 @@ class App extends Component {
     this.state = {
       showLoginPanel: false,
 			display: 'block',
-			modalState: {}
+			modalState: {},
+			loginValue: "Login / Register",
+			user: false,
+			controlPanel: false
 		};
 		
 
@@ -33,7 +37,20 @@ class App extends Component {
 
 
   toggleLoginPanel() {
-	this.setState(state => ({ showLoginPanel: !state.showLoginPanel }));
+	  console.log("USER", this.state.user);
+	  if(!this.state.user)
+	  {
+		this.setState(state => ({ showLoginPanel: !state.showLoginPanel }));
+	  }
+	  else
+	  {
+		this.setState(state => ({ controlPanel: !state.controlPanel }));  
+	  }
+  }
+  
+  closeMe = () =>
+  {
+	  this.setState({ modalState: {}});
   }
 
   // listen for click on button and hide content text
@@ -49,7 +66,22 @@ class App extends Component {
       this.setState({
         display: 'none'
       })  
-    }, 2000);   
+    }, 2000);
+	
+	API.session().then(response => {
+			if(response.data.username)
+			{
+				this.setState({
+					loginValue: response.data.username,
+					user: "true"
+				}) 
+				
+				document.getElementById('content').style.display = "none";
+			} 
+        })
+        .catch(err => {
+          console.log(err);
+        });
 }
 	
   render() {
@@ -57,10 +89,10 @@ class App extends Component {
       <div className="section_wrapper">
 	    <div className="globe">
 			<div className="logo">GDV</div>
-			<Modal name={this.state.modalState.name} flightNumber={this.state.modalState.flightNumber} flightYear={this.state.modalState.flightYear} image={this.state.modalState.image} desc={this.state.modalState.desc}  />
-			<Globe 		   panelShown={this.state.showLoginPanel} cbProp={this.sendModalState}/>
+			<Modal closeMe={this.closeMe} name={this.state.modalState.name} flightNumber={this.state.modalState.flightNumber} flightYear={this.state.modalState.flightYear} image={this.state.modalState.image} desc={this.state.modalState.desc}  />
+			<Globe user={this.state.user} username={this.state.loginValue} controlPanel={this.state.controlPanel} panelShown={this.state.showLoginPanel} cbProp={this.sendModalState}/>
 			<WelcomeBanner panelShown={this.state.showLoginPanel}/>
-			<LoginButton   panelShown={this.state.showLoginPanel} cbProp={this.toggleLoginPanel}/>
+			<LoginButton   panelShown={this.state.showLoginPanel} cbProp={this.toggleLoginPanel} value={this.state.loginValue}/>
 			<TopButton />
 			<CloseButton   panelShown={this.state.showLoginPanel} cbProp={this.toggleLoginPanel}/>
 			<LoginPanel    panelShown={this.state.showLoginPanel}/>

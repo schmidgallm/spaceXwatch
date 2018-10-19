@@ -27,7 +27,7 @@ module.exports = function(app) {
 	});
 
 	app.get('/spacex/images/earth/map', (req, res) => {
-		res.sendFile(path.resolve('routes/api/map.jpg'));
+		res.sendFile(path.resolve('routes/api/map_desat_4000.jpg'));
 	});
 
 	app.get('/spacex/images/earth/bump', (req, res) => {
@@ -59,6 +59,11 @@ module.exports = function(app) {
 	});
 
 	app.get('/spacex/images/moon/bump', (req, res) => {
-		res.sendFile(path.resolve('routes/api/moonbump.jpg'));
+		res.sendFile(path.resolve('routes/api/moonbump.jpg'))
+	});
+	
+	app.get('/spacex/images/newspace', (req, res) => {
+		console.log("hi");
+		res.sendFile(path.resolve('routes/api/space_b.jpg'));
 	});
 }
