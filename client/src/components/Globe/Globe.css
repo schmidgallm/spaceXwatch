@@ -126,3 +126,41 @@ canvas {
 	from { opacity: 1; } 
 	to { opacity: 0; } 
 }
+
+#control-panel
+{
+	width: 200px;
+	position: absolute;
+	top: 97px;
+    right: 0px;
+    height: 400px;
+    background: #060606db;
+	z-index: 300;
+	display: none;
+	padding-top: 15px;
+	padding-left: 10px;
+	color: white;
+	border-radius: 7px;
+}
+
+#control-panel[data-shown="true"]
+{
+	display: block;
+}
+
+.control-toggle
+{
+	cursor: pointer;
+	margin-top: 10px;
+	background: gray;
+	border-radius: 7px;
+	width: max-content;
+	padding: 5px;
+	transition: color 150ms ease-out, background-color 150ms ease-out;
+}
+
+.control-toggle:hover
+{
+	color: rgb(50, 50, 50);
+	background-color: lightgray;
+}

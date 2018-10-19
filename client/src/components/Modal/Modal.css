@@ -1,6 +1,7 @@
 .modal {
     width: 300px;
-    height: 400px;
+    height: max-content;
+	max-height: 600px;
     position: absolute;
     top: 10px;
     left: 10px;
@@ -32,5 +33,24 @@
 #description {
     font-size: 11px;
     line-height: 1.5;
+}
+
+.modal-close
+{
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	cursor: pointer;
+}
+
+.modal #description
+{
+	height: max-content;
+}
+
+.modal #m_desc_wrapper
+{
+	height: 200px;
+	overflow-y: scroll;
 }
 

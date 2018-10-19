@@ -15,13 +15,16 @@ class Modal extends Component {
         if(this.props.name) {
         return(
             <div className="modal">
+			<div onClick={this.props.closeMe} className="modal-close"> X Close</div>
                 <h2>{this.props.name}</h2>
                 <span><p id="flightNumber">Flight Number: {this.props.flightNumber}</p></span>
                 <span><p id="flightYear">Flight Year: {this.props.flightYear}</p></span>
                 <div className="img-container">
                     <img id="image" src={this.props.image} />
                 </div>
-                <p id="description">{this.props.desc}</p>   
+				<div id="m_desc_wrapper">
+					<p id="description">{this.props.desc}</p> 
+				</div>				
             </div>
         )
         }

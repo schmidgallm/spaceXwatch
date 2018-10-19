@@ -23,6 +23,12 @@ class Globe extends Component {
     this.start = this.start.bind(this);
     this.stop = this.stop.bind(this);
     this.animate = this.animate.bind(this);
+	
+	this.state = {
+		toggle_rotate: true,
+		toggle_moon: false,
+		toggle_sun: false
+	};
 
   }
 
@@ -32,7 +38,7 @@ class Globe extends Component {
 
     // set timout function increases earth size after 9 seconds.
     // wait 9 seconds becuase beginning text animation on load takes about 8 seconds
-    setTimeout(() => {
+    /*setTimeout(() => {
       camera.position.z = 12;
     }, 8250);
     setTimeout(() => {
@@ -70,7 +76,7 @@ class Globe extends Component {
     }, 8937);
     setTimeout(() => {
       camera.position.z = 9;
-    }, 9000);
+    }, 9000);*/
 
     // load rockets function finds the api data and logs it
     // need it here and when rendering lines becuase it will also populate api from databse if no data exists
@@ -137,7 +143,7 @@ class Globe extends Component {
     // create mesh based on geometry and material
     const mesh = new THREE.Mesh(sphereGeomerty, sphereMaterial )
     // add stars skybox to scene
-    scene.add(mesh);
+//_______________________________________________________________________________________________________//////scene.add(mesh);
 
 
     /*
@@ -184,8 +190,12 @@ class Globe extends Component {
     material.bumpMap = bumpImg;
     // material.bumpScale = 0.05;
     material.specularMap = specImg;
-    material.specular = new THREE.Color('0xffffff')
-    const sphere = new THREE.Mesh(geometry, material);
+    material.specular = new THREE.Color('0xffffff');
+	
+	
+	var iskyfireMaterial = new THREE.MeshBasicMaterial({ map: mapImg });
+	//const sphere = new THREE.Mesh(geometry, material);
+	const sphere = new THREE.Mesh(geometry, iskyfireMaterial);
 
    
     var meshGeometry = new THREE.SphereGeometry(5,32,32)
@@ -196,14 +206,40 @@ class Globe extends Component {
       transparent: true,
       depthWrite: true,
     })
-    var cloudMesh = new THREE.Mesh(meshGeometry, meshMaterial)
-    sphere.add(cloudMesh)
+
+	
+    //var cloudMesh = new THREE.Mesh(meshGeometry, meshMaterial)
+    //sphere.add(cloudMesh)
 
     // add sphere(earth) to scene
     scene.add(sphere)
 
     // set camera position from viewscreen
     camera.position.z = 13;
+	
+	
+	/*
+    // ---------------------------
+    // NEW SPACE CREATION
+    // ---------------------------
+    */
+	
+	//Space background is a large sphere
+  var spacetex = THREE.ImageUtils.loadTexture("/spacex/images/newspace");
+  var spacesphereGeo = new THREE.SphereGeometry(20,20,20);
+  var spacesphereMat = new THREE.MeshBasicMaterial();
+  spacesphereMat.map = spacetex;
+
+  var spacesphere = new THREE.Mesh(spacesphereGeo,spacesphereMat);
+  
+  //spacesphere needs to be double sided as the camera is within the spacesphere
+  spacesphere.material.side = THREE.DoubleSide;
+  
+  spacesphere.material.map.wrapS = THREE.RepeatWrapping; 
+  spacesphere.material.map.wrapT = THREE.RepeatWrapping;
+  spacesphere.material.map.repeat.set( 5, 3);
+  
+  scene.add(spacesphere);
 
     /*
     // ---------------------------
@@ -214,21 +250,21 @@ class Globe extends Component {
     // init texture map of moon
     const moonImg = new THREE.TextureLoader().load('spacex/images/moon');
     // init sphere geometry for moon
-    const moonGeometry = new THREE.SphereGeometry(5, 5, 5);
+    const moonGeometry = new THREE.SphereGeometry(2, 18, 18);
     // Use mesh phong material so it gives off reflectivity and glow
     const moonMaterial = new THREE.MeshPhongMaterial({
       map: moonImg
     });
     const moon = new THREE.Mesh(moonGeometry, moonMaterial);
     // moon.vertices.push(new THREE.Vector3(1,1,1));
-    scene.add(moon);
+//_______________________________________________________________________________________________________//////scene.add(moon);
     // set position of moon
-    moon.position.set(20,10,-40);
+    moon.position.set(20,0,0);
     // set shadowing of moon to false
     moon.castShadow = false;
     // rotate moon around earth. need to set up moon as child to earth
     var moonParent = sphere;
-    sphere.add(moon)
+//_______________________________________________________________________________________________________//////sphere.add(moon)
 
 
 
@@ -249,138 +285,9 @@ class Globe extends Component {
 
 
     // Loop through getLaunces function which returns json from /spacex/data and create a line 
-    API.getLaunches().then(rsp => {
-      const gps = rsp.data;
-      var loader = new THREE.FontLoader();
+	
 
-      // load in spacex/data
-      loader.load('/spacex/data', font => {
-
-        for (var j = 0; j < gps.length; j++) {
-
-          // create new line for each iterator
-          var material = new THREE.LineBasicMaterial({
-            color: 'white',
-            linewidth: 1, // cannot change :(
-            name: gps[j].name,
-          });
-
-
-
-          var geometry = new THREE.Geometry();
-          geometry.vertices.push(new THREE.Vector3(0, 0, 0));
-
-          // push each line to a vertice and create declare the line
-          geometry.vertices.push(new THREE.Vector3(5.5, 0, 0));
-          var line = new THREE.Line(geometry, material);
-
-          // convert each line from deg to rad so it can init into lat and long coords
-          line.rotation.z = THREE.Math.degToRad(gps[j].lat);
-          line.rotation.y = THREE.Math.degToRad(gps[j].lon);
-
-          // userData is native object in three js to hold custom data for each object
-          // init userData object and hold each objects data
-          line.userData = {
-            name: gps[j].name,
-            flightNumber: gps[j].flightNumber,
-            flightYear: gps[j].flightYear,
-            image: gps[j].image,
-            desc: gps[j].desc
-          };
-
-          // add line to scene
-          scene.add(line);
-
-          // create empty array to hold all line objects and push each line into objects
-          // will need this for click events
-
-          objects.push(line);
-
-          var parent = line;
-          scene.add(parent);
-
-          var stick = new THREE.Object3D();
-          stick.castShadow = true;
-          var point = new THREE.Vector3(5, 0, 0);
-          stick.lookAt(point);
-          parent.add(stick);
-
-          var geometry = new THREE.RingBufferGeometry(.2, .1, 30, 5, 6.3);
-          var material = new THREE.MeshBasicMaterial({
-            color: 'gold',
-            transparent: false,
-            wireframe: false,
-            opacity: 1,
-            side: THREE.DoubleSide
-          });
-          var ring = new THREE.Mesh(geometry, material);
-          ring.position.set(0, 0, 5.5);
-
-          // set same user data to rings since it is a child of the line
-          ring.userData = {
-            name: gps[j].name,
-            flightNumber: gps[j].flightNumber,
-            flightYear: gps[j].flightYear,
-            image: gps[j].image,
-            desc: gps[j].desc
-          };
-
-          // cast shadow to true to show shadow on earth surface
-          ring.castShadow = true;
-
-          // add ring as child to stick
-          stick.add(ring);
-
-          // push to global ringArray array so we can access them outside of component did mount function
-          ringArray.push(ring);
-
-          // ---------------------------
-          // OPTIONAL TEXT WITH LINE THAT WILL WRITE FLIGHT NAME AT END OF LINE:
-          // ---------------------------
-          /*
-              let xMid;
-              var text;
-              var textShape = new THREE.BufferGeometry();
-              var color = 'red';
-              var matDark = new THREE.LineBasicMaterial( {
-              color: color,
-              side: THREE.DoubleSide
-              } );
-              var matLite = new THREE.MeshBasicMaterial( {
-              color: color,
-              transparent: true,
-              opacity: 0.7,
-              side: THREE.DoubleSide
-              } );
-  
-              var message = "";
-              var shapes = font.generateShapes( gps[j].flightName, 0.2, 2 );
-              var geometryTwo = new THREE.ShapeGeometry( shapes );
-              geometryTwo.computeBoundingBox();
-              xMid = -0.5 * ( geometryTwo.boundingBox.max.x - geometryTwo.boundingBox.min.x );
-              geometry.translate( xMid, 0, 0 );
-              // make shape ( N.B. edge view not visible )
-              textShape.fromGeometry( geometryTwo );
-              text = new THREE.Mesh( textShape, matLite );
-              
-              text.rotation.z =THREE.Math.degToRad( gps[j].lat );
-              text.rotation.y =THREE.Math.degToRad( gps[j].lon );
-      
-              var a = new THREE.Euler( 0, THREE.Math.degToRad( gps[j].lon ), THREE.Math.degToRad( gps[j].lon ), 'XYZ' );
-              var b = new THREE.Vector3( 9, 0, 0 );
-              var ab = b.applyEuler(a);	
-              
-              text.position.x = ab.x;
-              text.position.y = ab.y;
-              text.position.z = ab.z;
-      
-              scene.add( text );	
-              */
-
-
-        } // END FOR LOOP
-      }); // END LOADER.LOAD FUNCTION
-    }); // END GET LAUNCHES FUNCTION
+   
 
 
     /*
@@ -491,6 +398,145 @@ class Globe extends Component {
       camera.updateProjectionMatrix();
     });
   }
+  
+  spaceXData = () => {
+	   API.getLaunches().then(rsp => {
+      const gps = rsp.data;
+      var loader = new THREE.FontLoader();
+
+      // load in spacex/data
+      loader.load('/spacex/data', font => {
+		  
+		  this.sphere.rotation.x = 0;
+		  this.sphere.rotation.y = 0;
+
+        for (var j = 0; j < gps.length; j++) {
+
+          // create new line for each iterator
+          var material = new THREE.LineBasicMaterial({
+            color: 'white',
+            linewidth: 1, // cannot change :(
+            name: gps[j].name,
+          });
+
+
+
+          var geometry = new THREE.Geometry();
+          geometry.vertices.push(new THREE.Vector3(0, 0, 0));
+
+          // push each line to a vertice and create declare the line
+          geometry.vertices.push(new THREE.Vector3(5.5, 0, 0));
+          var line = new THREE.Line(geometry, material);
+
+          // convert each line from deg to rad so it can init into lat and long coords
+          line.rotation.z = THREE.Math.degToRad(gps[j].lat);
+          line.rotation.y = THREE.Math.degToRad((gps[j].lon) * -1);
+
+          // userData is native object in three js to hold custom data for each object
+          // init userData object and hold each objects data
+          line.userData = {
+            name: gps[j].name,
+            flightNumber: gps[j].flightNumber,
+            flightYear: gps[j].flightYear,
+            image: gps[j].image,
+            desc: gps[j].desc
+          };
+
+          // add line to scene
+          this.scene.add(line);
+
+          // create empty array to hold all line objects and push each line into objects
+          // will need this for click events
+
+          objects.push(line);
+
+          var parent = line;
+          this.scene.add(parent);
+
+          var stick = new THREE.Object3D();
+          stick.castShadow = true;
+          var point = new THREE.Vector3(5, 0, 0);
+          stick.lookAt(point);
+          parent.add(stick);
+
+          var geometry = new THREE.RingBufferGeometry(.2, .1, 30, 5, 6.3);
+          var material = new THREE.MeshBasicMaterial({
+            color: 'gold',
+            transparent: false,
+            wireframe: false,
+            opacity: 1,
+            side: THREE.DoubleSide
+          });
+          var ring = new THREE.Mesh(geometry, material);
+          ring.position.set(0, 0, 5.5);
+
+          // set same user data to rings since it is a child of the line
+          ring.userData = {
+            name: gps[j].name,
+            flightNumber: gps[j].flightNumber,
+            flightYear: gps[j].flightYear,
+            image: gps[j].image,
+            desc: gps[j].desc
+          };
+
+          // cast shadow to true to show shadow on earth surface
+          ring.castShadow = true;
+
+          // add ring as child to stick
+          stick.add(ring);
+
+          // push to global ringArray array so we can access them outside of component did mount function
+          ringArray.push(ring);
+
+          // ---------------------------
+          // OPTIONAL TEXT WITH LINE THAT WILL WRITE FLIGHT NAME AT END OF LINE:
+          // ---------------------------
+          /*
+              let xMid;
+              var text;
+              var textShape = new THREE.BufferGeometry();
+              var color = 'red';
+              var matDark = new THREE.LineBasicMaterial( {
+              color: color,
+              side: THREE.DoubleSide
+              } );
+              var matLite = new THREE.MeshBasicMaterial( {
+              color: color,
+              transparent: true,
+              opacity: 0.7,
+              side: THREE.DoubleSide
+              } );
+  
+              var message = "";
+              var shapes = font.generateShapes( gps[j].flightName, 0.2, 2 );
+              var geometryTwo = new THREE.ShapeGeometry( shapes );
+              geometryTwo.computeBoundingBox();
+              xMid = -0.5 * ( geometryTwo.boundingBox.max.x - geometryTwo.boundingBox.min.x );
+              geometry.translate( xMid, 0, 0 );
+              // make shape ( N.B. edge view not visible )
+              textShape.fromGeometry( geometryTwo );
+              text = new THREE.Mesh( textShape, matLite );
+              
+              text.rotation.z =THREE.Math.degToRad( gps[j].lat );
+              text.rotation.y =THREE.Math.degToRad( gps[j].lon );
+      
+              var a = new THREE.Euler( 0, THREE.Math.degToRad( gps[j].lon ), THREE.Math.degToRad( gps[j].lon ), 'XYZ' );
+              var b = new THREE.Vector3( 9, 0, 0 );
+              var ab = b.applyEuler(a);	
+              
+              text.position.x = ab.x;
+              text.position.y = ab.y;
+              text.position.z = ab.z;
+      
+              scene.add( text );	
+              */
+
+
+        } // END FOR LOOP
+      }); // END LOADER.LOAD FUNCTION
+    }); // END GET LAUNCHES FUNCTION
+	
+  }
 
   // on willunmount this will stop all animations and remove all rendering from dom element
   componentWillUnmount() {
@@ -511,15 +557,18 @@ class Globe extends Component {
 
 
   // animate function that renders all scenes and has earth object auto rotate
-  animate() {
+  animate = () => {
     // right now no rotation since on auto rotate the line objects do not rotate with earth
-    objects.forEach(object => {
-      object.rotation.y += 0.003;
-      object.rotation.x += 0.000;
-    })
-    this.moon.rotation.y += 0.002;
-    this.sphere.rotation.x += 0.000;
-    this.sphere.rotation.y += 0.003;
+	if(this.state.toggle_rotate)
+	{
+		objects.forEach(object => {
+		  object.rotation.y += 0.003;
+		  object.rotation.x += 0.000;
+		})
+		this.moon.rotation.y += 0.002;
+		this.sphere.rotation.x += 0.000;
+		this.sphere.rotation.y += 0.003;
+	}
     this.renderScene()
     this.frameId = window.requestAnimationFrame(this.animate)
   }
@@ -528,9 +577,70 @@ class Globe extends Component {
   renderScene() {
     this.renderer.render(this.scene, this.camera);
   }
+  
+  toggleSun = () =>
+  {
+	  this.setState(state => ({
+		toggle_sun: !state.toggle_sun
+	}));
+	
+	if(!this.state.toggle_sun)
+	{
+		const mapImg = new THREE.TextureLoader().load('spacex/images/earth/map');
+		const bumpImg = new THREE.TextureLoader().load('spacex/images/earth/bump');
+		const specImg = new THREE.TextureLoader().load('spacex/images/earth/specular');
+		
+		const material = new THREE.MeshPhongMaterial();
+		material.map = mapImg;
+		material.bumpMap = bumpImg;
+		material.specularMap = specImg;
+		material.specular = new THREE.Color('0xffffff')
+		
+		this.sphere.material = material;
+		this.sphere.material.needsUpdate = true;
+	}
+	else
+	{
+		const mapImg = new THREE.TextureLoader().load('spacex/images/earth/map');
+		var iskyfireMaterial = new THREE.MeshBasicMaterial({ map: mapImg });
+		
+		this.sphere.material = iskyfireMaterial;
+		this.sphere.material.needsUpdate = true;
+	}
+  }
+  
+   toggleMoon = () =>
+  {
+	  this.setState(state => ({
+		toggle_moon: !state.toggle_moon
+	}));
+	
+	if(!this.state.toggle_moon)
+	{
+
+	    this.scene.add(this.moon);
+	    this.sphere.add(this.moon);
+	}
+	else
+	{
+	    this.sphere.remove(this.moon);
+		this.scene.remove(this.moon);
+	}
+  }
+  
+   toggleRotate = () =>
+  {
+	  this.setState(state => ({
+		toggle_rotate: !state.toggle_rotate
+	}));
+	
+	console.log(this.state.toggle_rotate);
+  }
 
   render() {
-    return ( <
+    return ( 
+	<div>
+	<
       div className = {
         this.props.panelShown ? "globeDiv globeDiv__panelShown" : "globeDiv"
       }
@@ -540,6 +650,16 @@ class Globe extends Component {
         }
       }
       />
+	 <div id="control-panel" data-shown={this.props.controlPanel} >
+		Choose a dataset:
+		<div onClick={this.spaceXData} className="control-toggle">SpaceX API</div>
+		<br/>
+		Controls:
+		<div onClick={this.toggleSun} className="control-toggle"> Earth Lighting: {this.state.toggle_sun.toString()}</div>
+		<div onClick={this.toggleMoon} className="control-toggle"> Moon: {this.state.toggle_moon.toString()}</div>
+		<div onClick={this.toggleRotate} className="control-toggle"> Auto-Rotate: {this.state.toggle_rotate.toString()}</div>
+	 </div>
+	 </div>
     )
   }
 }
