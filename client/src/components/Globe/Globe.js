@@ -26,8 +26,8 @@ class Globe extends Component {
 	
 	this.state = {
 		toggle_rotate: true,
-		toggle_moon: true,
-		toggle_sun: true
+		toggle_moon: false,
+		toggle_sun: false
 	};
 
   }
