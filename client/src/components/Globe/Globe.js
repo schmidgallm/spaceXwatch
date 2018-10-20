@@ -206,7 +206,7 @@ class Globe extends Component {
 	
 	//Space background is a large sphere
   var spacetex = THREE.ImageUtils.loadTexture("/spacex/images/newspace");
-  var spacesphereGeo = new THREE.SphereGeometry(20,20,20);
+  var spacesphereGeo = new THREE.SphereGeometry(50,32,32);
   var spacesphereMat = new THREE.MeshBasicMaterial();
   spacesphereMat.map = spacetex;
 
@@ -231,7 +231,7 @@ class Globe extends Component {
     const moonImg = new THREE.TextureLoader().load('spacex/images/moon');
     const moonBumpImg = new THREE.TextureLoader().load('spacex/images/moon/bump');
     // init sphere geometry for moon
-    const moonGeometry = new THREE.SphereGeometry(2.5,32,32);
+    const moonGeometry = new THREE.SphereGeometry(1.5,32,32);
     // Use mesh phong material so it gives off reflectivity and glow
     const moonMaterial = new THREE.MeshPhongMaterial({
       map: moonImg,
