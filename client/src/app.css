@@ -156,7 +156,7 @@ a {
 
 .fa-github:hover {
 	color: #E25C33;
-	flex-grow: 1;
+	font-size: 60px;
 }
 
 .fa-linkedin:hover {
