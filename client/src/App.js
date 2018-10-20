@@ -100,41 +100,37 @@ class App extends Component {
 		<Section image="ace.jpg" title="Visual Data" details="Create points of interest using location data" direction="left"/>
 		<Section image="spacex.jpg" title="SpaceX" details="View data from the SpaceX API" direction="right"/>
 		<Section image="share.jpg" title="Collaboration" details="Share your data with the communitity" direction="left"/>
-		<div id="footer">
-			<div className="footer-flexbox">
-			  <div className="footer-sidebar">
-				 Github
-				<ul>
-				  <li>
-					<a href="https://github.com/stevenpassey" target="_blank" rel="noopener noreferrer">
-						github.com/stevenpassey
-					</a>
-				  </li>
-				  <li>
-					<a href="https://github.com/schmidgallm" target="_blank" rel="noopener noreferrer">
-						github.com/schmidgallm
-					</a>
-				  </li>
-				</ul>  
-			  </div>
-			  <div className="footer-main">
-				 Linkedin
-				<ul>
-				  <li>
-					<a href="https://www.linkedin.com/in/stevenpassey/" target="_blank" rel="noopener noreferrer">
-						linkedin.com/in/stevenpassey
-					</a>
-				  </li>
-				  <li>
-					<a href="https://www.linkedin.com/in/michael-schmidgall/" target="_blank" rel="noopener noreferrer">
-						linkedin.com/in/michael-schmidgall
-					</a>
-				  </li>
-				</ul>  
-			  </div>  
+			<div id="footer">
+					<div className="michael">
+						<div className="card">
+							<div className="img">
+								<img src="spacex/images/michael" />
+							</div>
+							<div className="name">
+								<h2>Michael Schmidgall</h2>
+							</div>
+							<div className="icons">
+							<a href="https://github.com/schmidgallm"><i class="fab fa-github"></i></a>
+							<a href="https://www.linkedin.com/in/michael-schmidgall/"><i class="fab fa-linkedin"></i></a>
+							</div>
+						</div>
+					</div>
+					<div className="steven">
+						<div className="card">
+							<div className="img">
+								<img src="spacex/images/steven" />
+							</div>
+							<div className="name">
+								<h2>Steven Passey</h2>
+							</div>
+							<div className="icons">
+							<a href="https://github.com/stevenpassey"><i class="fab fa-github"></i></a>
+							<a href="https://www.linkedin.com/in/stevenpassey/"><i class="fab fa-linkedin"></i></a>
+							</div>
+						</div>
+					</div>
 			</div>
 		</div>
-	  </div>
     );
   }
 }

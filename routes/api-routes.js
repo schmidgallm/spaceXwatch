@@ -66,4 +66,14 @@ module.exports = function(app) {
 		console.log("hi");
 		res.sendFile(path.resolve('routes/api/space_b.jpg'));
 	});
+
+	app.get('/spacex/images/michael', (req, res) => {
+		console.log("hi");
+		res.sendFile(path.resolve('routes/api/michael.png'));
+	});
+
+	app.get('/spacex/images/steven', (req, res) => {
+		console.log("hi");
+		res.sendFile(path.resolve('routes/api/steven.jpg'));
+	});
 }

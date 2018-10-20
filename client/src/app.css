@@ -100,8 +100,93 @@ body
 	font-family: 'Noto Sans', sans-serif;
 	color: #7b7b7b;
 	line-height: 1;
+	display: flex;
+	width: 100%;
+	text-align: center;
 }
 
+.michael,
+.steven {
+	width: 100%;
+}
+
+.michael {
+	border-right: 1px solid #fff;
+}
+
+.michael .name {
+	width: 100%;
+}
+
+.michael .name {
+	white-space: nowrap;
+}
+
+.card {
+	width: 50%;
+	margin: 0 auto;
+}
+
+.img {
+	width: 50%;
+	margin: 0 auto;
+	border-radius: 50%;
+	overflow: hidden;
+}
+
+.card img {
+	width: 100%;
+	height: auto;
+	display: block;
+}
+
+.name h2 {
+	color: #fff;
+}
+
+a {
+	font-size: 20px;
+}
+
+.fab {
+	font-size: 50px;
+	color: #7b7b7b;
+	margin: 0 20px;
+}
+
+.fa-github:hover {
+	color: #E25C33;
+	flex-grow: 1;
+}
+
+.fa-linkedin:hover {
+	color: #E25C33;
+}
+
+@media all and (max-width: 750px) {
+	#footer {
+		display: block;
+	}
+	.michael {
+		margin-bottom: 50px;
+	}
+}
+
+@media all and (max-width: 1067px) {
+	.michael .name h2 {
+		white-space: normal;
+	}
+}
+
+
+
+
+
+
+
+
+
+/*
 #footer a
 {
 	text-decoration: none;
@@ -163,6 +248,8 @@ body
 	font-weight: bold;
 	transition: color ease-out 250ms;
 }
+
+*/
 
 
 
