@@ -17,6 +17,10 @@ export default {
 		return axios.post('/signin', data)
 	},
 	
+	logout: () => {
+		return axios.get('/logout');
+	},
+	
 	session: () => {
 		return axios.get('/session');
 	},

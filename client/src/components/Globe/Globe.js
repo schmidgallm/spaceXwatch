@@ -26,8 +26,8 @@ class Globe extends Component {
 	
 	this.state = {
 		toggle_rotate: true,
-		toggle_moon: false,
-		toggle_sun: false
+		toggle_moon: true,
+		toggle_sun: true
 	};
 
   }
@@ -173,9 +173,9 @@ class Globe extends Component {
     material.specular = new THREE.Color('0xffffff');
 	
 	
-	var iskyfireMaterial = new THREE.MeshBasicMaterial({ map: mapImg });
-	//const sphere = new THREE.Mesh(geometry, material);
-	const sphere = new THREE.Mesh(geometry, iskyfireMaterial);
+	//var iskyfireMaterial = new THREE.MeshBasicMaterial({ map: mapImg });
+	const sphere = new THREE.Mesh(geometry, material);
+	//const sphere = new THREE.Mesh(geometry, iskyfireMaterial);
 
    
     var meshGeometry = new THREE.SphereGeometry(5,32,32)
@@ -241,14 +241,16 @@ class Globe extends Component {
     // material.bumpMap = moonBumpImg;
     const moon = new THREE.Mesh(moonGeometry, moonMaterial);
     // moon.vertices.push(new THREE.Vector3(1,1,1));
-//_______________________________________________________________________________________________________//////scene.add(moon);
+//_______________________________________________________________________________________________________//////
+scene.add(moon);
     // set position of moon
     moon.position.set(20,0,0);
     // set shadowing of moon to false
     moon.castShadow = false;
     // rotate moon around earth. need to set up moon as child to earth
     var moonParent = sphere;
-//_______________________________________________________________________________________________________//////sphere.add(moon)
+//_______________________________________________________________________________________________________//////
+sphere.add(moon)
 
 
 
@@ -619,6 +621,13 @@ class Globe extends Component {
 	console.log(this.state.toggle_rotate);
   }
 
+  logout = () => {
+	  console.log("logout");
+	  API.logout().then((res) => {
+		  window.location.reload();
+	  });
+  }
+
   render() {
     return ( 
 	<div>
@@ -640,6 +649,8 @@ class Globe extends Component {
 		<div onClick={this.toggleSun} className="control-toggle"> Earth Lighting: {this.state.toggle_sun.toString()}</div>
 		<div onClick={this.toggleMoon} className="control-toggle"> Moon: {this.state.toggle_moon.toString()}</div>
 		<div onClick={this.toggleRotate} className="control-toggle"> Auto-Rotate: {this.state.toggle_rotate.toString()}</div>
+		<br />
+		<div onClick={this.logout} className="control-toggle"> Logout</div>
 	 </div>
 	 </div>
     )
