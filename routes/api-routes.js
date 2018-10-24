@@ -14,8 +14,24 @@ module.exports = function(app) {
 		articlesController.getLaunches(req, res);
 	});
 	
+	app.post('/getuserlaunches', (req, res) => {
+		articlesController.getUserLaunches(req, res);
+	});
+	
 	app.get('/creategeodataset', (req, res) => {
 		articlesController.createGeoDataSet(req, res);
+	});
+	
+	app.post('/user_creategeodataset', (req, res) => {
+		articlesController.user_createGeoDataSet(req, res);
+	});
+	
+	app.post('/user_createEvent', (req, res) => {
+		articlesController.user_createEvent(req, res);
+	});
+	
+	app.post('/user_datasets', (req, res) => {
+		articlesController.user_datasets(req, res);
 	});
 	
 	app.get('/addspacexdata', (req, res) => {

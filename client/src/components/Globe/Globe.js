@@ -27,7 +27,8 @@ class Globe extends Component {
 	this.state = {
 		toggle_rotate: true,
 		toggle_moon: true,
-		toggle_sun: true
+		toggle_sun: true,
+		user_button_array: []
 	};
 
   }
@@ -35,7 +36,19 @@ class Globe extends Component {
 
 
   componentDidMount() {
-
+	  
+	  API.session().then(response => {
+			if(response.data.id)
+			{
+				API.user_datasets({userId: response.data.id}).then((res) => {
+					console.log("datasets by dre", res);
+					this.setState({user_button_array: res.data});
+				})
+			} 
+        })
+        .catch(err => {
+          console.log(err);
+        });
     // set timout function increases earth size after 9 seconds.
     // wait 9 seconds becuase beginning text animation on load takes about 8 seconds
     /*setTimeout(() => {
@@ -170,7 +183,7 @@ class Globe extends Component {
     material.bumpMap = bumpImg;
     // material.bumpScale = 0.05;
     material.specularMap = specImg;
-    material.specular = new THREE.Color('0xffffff');
+    material.specular = new THREE.Color(0x111111);
 	
 	
 	//var iskyfireMaterial = new THREE.MeshBasicMaterial({ map: mapImg });
@@ -381,6 +394,8 @@ sphere.add(moon)
       camera.aspect = width / height;
       camera.updateProjectionMatrix();
     });
+	
+	
   }
   
   spaceXData = () => {
@@ -420,8 +435,8 @@ sphere.add(moon)
           // init userData object and hold each objects data
           line.userData = {
             name: gps[j].name,
-            flightNumber: gps[j].flightNumber,
-            flightYear: gps[j].flightYear,
+            flightNumber: "Flight Number:" + gps[j].flightNumber,
+            flightYear: "Flight Year:" + gps[j].flightYear,
             image: gps[j].image,
             desc: gps[j].desc
           };
@@ -514,14 +529,153 @@ sphere.add(moon)
       
               scene.add( text );	
               */
-
+			  
 
         } // END FOR LOOP
       }); // END LOADER.LOAD FUNCTION
     }); // END GET LAUNCHES FUNCTION
 	
   }
+  
+  userDataRender = (geo_dataset_id) => {
+	   API.getUserLaunches({GeoDataSetId: geo_dataset_id}).then(rsp => {
+      const gps = rsp.data;
+      var loader = new THREE.FontLoader();
 
+      // load in spacex/data
+      loader.load('/spacex/data', font => {
+		  
+		  this.sphere.rotation.x = 0;
+		  this.sphere.rotation.y = 0;
+
+        for (var j = 0; j < gps.length; j++) {
+
+          // create new line for each iterator
+          var material = new THREE.LineBasicMaterial({
+            color: 'white',
+            linewidth: 1, // cannot change :(
+            name: gps[j].name,
+          });
+
+
+
+          var geometry = new THREE.Geometry();
+          geometry.vertices.push(new THREE.Vector3(0, 0, 0));
+
+          // push each line to a vertice and create declare the line
+          geometry.vertices.push(new THREE.Vector3(5.5, 0, 0));
+          var line = new THREE.Line(geometry, material);
+
+          // convert each line from deg to rad so it can init into lat and long coords
+          line.rotation.z = THREE.Math.degToRad(gps[j].lat);
+          line.rotation.y = THREE.Math.degToRad((gps[j].lon) * -1);
+
+          // userData is native object in three js to hold custom data for each object
+          // init userData object and hold each objects data
+          line.userData = {
+            name: gps[j].name,
+            flightNumber: "",
+            flightYear: "",
+            image: gps[j].image,
+            desc: gps[j].desc
+          };
+
+          // add line to scene
+          this.scene.add(line);
+
+          // create empty array to hold all line objects and push each line into objects
+          // will need this for click events
+
+          objects.push(line);
+
+          var parent = line;
+          this.scene.add(parent);
+
+          var stick = new THREE.Object3D();
+          stick.castShadow = true;
+          var point = new THREE.Vector3(5, 0, 0);
+          stick.lookAt(point);
+          parent.add(stick);
+
+          var ringGeometry = new THREE.RingBufferGeometry(.2, .1, 30, 5, 6.3);
+          var ringMaterial = new THREE.MeshBasicMaterial({
+            color: 'gold',
+            transparent: false,
+            wireframe: false,
+            opacity: 1,
+            side: THREE.DoubleSide
+          });
+          var ring = new THREE.Mesh(ringGeometry, ringMaterial);
+          ring.position.set(0, 0, 5.5);
+
+          // set same user data to rings since it is a child of the line
+          ring.userData = {
+            name: gps[j].name,
+            flightNumber: "",
+            flightYear: "",
+            image: gps[j].image,
+            desc: gps[j].desc
+          };
+
+          // cast shadow to true to show shadow on earth surface
+          ring.castShadow = true;
+
+          // add ring as child to stick
+          stick.add(ring);
+
+          // push to global ringArray array so we can access them outside of component did mount function
+          ringArray.push(ring);
+
+          // ---------------------------
+          // OPTIONAL TEXT WITH LINE THAT WILL WRITE FLIGHT NAME AT END OF LINE:
+          // ---------------------------
+          /*
+              let xMid;
+              var text;
+              var textShape = new THREE.BufferGeometry();
+              var color = 'red';
+              var matDark = new THREE.LineBasicMaterial( {
+              color: color,
+              side: THREE.DoubleSide
+              } );
+              var matLite = new THREE.MeshBasicMaterial( {
+              color: color,
+              transparent: true,
+              opacity: 0.7,
+              side: THREE.DoubleSide
+              } );
+  
+              var message = "";
+              var shapes = font.generateShapes( gps[j].flightName, 0.2, 2 );
+              var geometryTwo = new THREE.ShapeGeometry( shapes );
+              geometryTwo.computeBoundingBox();
+              xMid = -0.5 * ( geometryTwo.boundingBox.max.x - geometryTwo.boundingBox.min.x );
+              geometry.translate( xMid, 0, 0 );
+              // make shape ( N.B. edge view not visible )
+              textShape.fromGeometry( geometryTwo );
+              text = new THREE.Mesh( textShape, matLite );
+              
+              text.rotation.z =THREE.Math.degToRad( gps[j].lat );
+              text.rotation.y =THREE.Math.degToRad( gps[j].lon );
+      
+              var a = new THREE.Euler( 0, THREE.Math.degToRad( gps[j].lon ), THREE.Math.degToRad( gps[j].lon ), 'XYZ' );
+              var b = new THREE.Vector3( 9, 0, 0 );
+              var ab = b.applyEuler(a);	
+              
+              text.position.x = ab.x;
+              text.position.y = ab.y;
+              text.position.z = ab.z;
+      
+              scene.add( text );	
+              */
+			  
+
+        } // END FOR LOOP
+      }); // END LOADER.LOAD FUNCTION
+    }); // END GET LAUNCHES FUNCTION
+	
+  }
+  
   // on willunmount this will stop all animations and remove all rendering from dom element
   componentWillUnmount() {
     this.stop()
@@ -627,6 +781,45 @@ sphere.add(moon)
 		  window.location.reload();
 	  });
   }
+  
+  addUserDataPanel = (event) => {
+	  event.target.parentElement.nextElementSibling.dataset.shown = "true";
+  }
+  
+  hideUserDataPanel = (event) => {
+	  event.target.parentElement.dataset.shown = "false";
+  }
+  
+  getNameOfData = (event) => {
+	  let name1 = event.target.parentElement.firstElementChild.nextElementSibling.value;
+	  let myEventTarget = event.target;
+	  console.log(name1);
+	  API.user_createGeoDataSet({name: name1}).then((res) => {
+		  document.getElementById("event_hidden_box").value=res.data;
+		  myEventTarget.parentElement.dataset.shown = "false";
+		  myEventTarget.parentElement.nextElementSibling.dataset.shown = "true";
+	  });
+  }
+  
+  getEventData = (event) => {
+	  let myEventTarget = event.target;
+	  const newEvent = {
+		  name: document.getElementById("event_name_box").value,
+		  lat: document.getElementById("event_lat_box").value,
+		  lon: document.getElementById("event_lon_box").value,
+		  desc: document.getElementById("event_desc_box").value,
+		  GeoDataSetId: document.getElementById("event_hidden_box").value
+	  }
+	  
+	  API.user_createEvent(newEvent).then((res) => {
+		
+		  document.getElementById("event_name_box").value = "";
+		  document.getElementById("event_lat_box").value = "";
+		  document.getElementById("event_lon_box").value = "";
+		  document.getElementById("event_desc_box").value = "";
+	  });
+  }
+  
 
   render() {
     return ( 
@@ -644,6 +837,8 @@ sphere.add(moon)
 	 <div id="control-panel" data-shown={this.props.controlPanel} >
 		Choose a dataset:
 		<div onClick={this.spaceXData} className="control-toggle">SpaceX API</div>
+		{this.state.user_button_array.map((value) => <div onClick={() => { this.userDataRender(value.id) }} className="control-toggle">{value.title}</div>)}
+		<div onClick={this.addUserDataPanel} className="control-toggle">Add your own data...</div>
 		<br/>
 		Controls:
 		<div onClick={this.toggleSun} className="control-toggle"> Earth Lighting: {this.state.toggle_sun.toString()}</div>
@@ -651,6 +846,28 @@ sphere.add(moon)
 		<div onClick={this.toggleRotate} className="control-toggle"> Auto-Rotate: {this.state.toggle_rotate.toString()}</div>
 		<br />
 		<div onClick={this.logout} className="control-toggle"> Logout</div>
+	 </div>
+	 <div id="add-data-panel" data-shown={false}>
+		Name of Data:<br/>
+		<input type="text" className="moveBox"/>
+		<br /><br />
+		<div className="control-toggle" onClick={this.getNameOfData}>Continue</div>
+		<div className="control-toggle" onClick={this.hideUserDataPanel}>Back</div>
+	 </div>
+	 <div id="add-events-panel" data-shown={false}>
+		Add Event <br/> <br/>
+		Name:<br/>
+		<input type="text" id="event_name_box"/> <br/>
+		Latitude:<br/>
+		<input type="text" id="event_lat_box"/> <br/>
+		Longitude:<br/>
+		<input type="text" id="event_lon_box"/> <br/>
+		Description:
+		<input type="text" id="event_desc_box"/>
+		<input type="hidden" value="0" id="event_hidden_box" />
+		<br /><br />
+		<div className="control-toggle" onClick={this.getEventData}>Add</div>
+		<div className="control-toggle" onClick={() => {window.location.reload()}}>Done</div>
 	 </div>
 	 </div>
     )

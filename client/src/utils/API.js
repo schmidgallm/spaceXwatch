@@ -9,6 +9,11 @@ export default {
             
     },
 	
+	getUserLaunches: (data) => {
+        return axios.post('/getuserlaunches', data)
+            
+    },
+	
 	signUp: (data) => {
 		return axios.post('/signup', data)
 	},
@@ -27,6 +32,18 @@ export default {
 	
 	createGeoDataSet: () => {
 		return axios.get('/creategeodataset');
+	},
+	
+	user_createGeoDataSet: (data) => {
+		return axios.post('/user_creategeodataset', data);
+	},
+	
+	user_createEvent: (data) => {
+		return axios.post('/user_createEvent', data);
+	},
+	
+	user_datasets: (data) => {
+		return axios.post('/user_datasets', data);
 	},
 	
 	addSpaceXData: () => {

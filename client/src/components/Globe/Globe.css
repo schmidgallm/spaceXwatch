@@ -5,29 +5,100 @@ canvas {
 
 .content {
     position: absolute;
-    top: 50%;
-    left: 50%;
+    top: 20vh;
+    right: 80px;
 	background-color: white;
 	font-family: 'Nunito', sans-serif;
-    transform: translate(-50%, -50%);
-    color: black;
+    transform: translateX(0px);
+    color: rgb(45, 45, 60);
     text-align: center;
-    width: 100%;
-	pointer-events: none;
-	transition: background-color ease-in-out 500ms, transform ease-in-out 250ms;
-	mix-blend-mode: screen;
-	height: 216px;
+    width: 362px;
+	transition: background-color ease-in-out 500ms, transform ease-in-out 500ms;
+	height: max-content;
 	overflow: hidden;
 	z-index: 14;
+	padding-bottom: 60px;
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-top: 30px;
+	border-radius: 3px;
+}
+
+@media screen and (max-width: 720px)
+{
+		.content
+		{
+			left: 50%;
+			transform: translateX(-50%);
+		}
 }
 
 .content__panelShown
 {
-	transform: translateX(calc(-50% - 300px)) translateY(-49%);
-	background-color: gray;
+    transform: translateX(500%);
 }
 
-.content h1 {
+.content-line-label
+{
+	display: block;
+	width: max-content;
+	background-color: white;
+	transform: translateY(-90%);
+	margin: 0 auto;
+	padding: 0px 30px;
+}
+
+.content button
+{
+	position: relative;
+	font-family: 'Nunito', sans-serif;
+	font-size: 24px;
+	background-color: rgb(45, 45, 60);
+	outline: none;
+	border: none;
+	color: white;
+	cursor: pointer;
+    overflow: hidden;
+	padding: 5px 10px;
+	border-radius: 3px;
+	transition: color ease-out 300ms, opacity 300ms 200ms;
+}
+
+.content button:nth-of-type(1)
+{
+	transform: translateY(10px);
+	background-color: rgb(226, 47, 24);
+}
+
+.content button:nth-of-type(1):hover
+{
+	/*line-height: 5;*/
+	color: white;
+}
+
+.content button:nth-of-type(1):before
+{
+	content: ' ';
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+	/*background-color: #108298;*/
+	background-color: rgb(45, 45, 60);
+	font-family: 'Nunito', sans-serif;
+	font-size: 24px;
+	transform: translateY(-42px);
+	transition: transform ease-out 300ms;
+	z-index: -5;
+}
+
+.content button:nth-of-type(1):hover:before
+{
+	transform: translateY(0px);
+}
+
+/*.content h1 {
     font-size: 5em;
     letter-spacing: 50px;
     text-indent: 50px;
@@ -67,7 +138,7 @@ canvas {
 
 .content h3 { display: none; width: max-content; background-color: rgb(230, 230, 230);  color: white;}
 
-.content p { display: none; width: max-content; background-color: rgb(230, 230, 230); color: white; }
+.content p { display: none; width: max-content; background-color: rgb(230, 230, 230); color: white; }*/
 
 .globe
 {
@@ -127,7 +198,7 @@ canvas {
 	to { opacity: 0; } 
 }
 
-#control-panel
+#control-panel, #add-data-panel, #add-events-panel
 {
 	width: 200px;
 	position: absolute;
@@ -143,7 +214,23 @@ canvas {
 	border-radius: 7px;
 }
 
-#control-panel[data-shown="true"]
+#add-data-panel, #add-events-panel
+{
+	background: #060606;
+}
+
+#add-data-panel .moveBox
+{
+	transform: translateY(9px);
+}
+
+#add-events-panel input
+{
+	margin-top: 5px;
+	margin-bottom: 10px;
+}
+
+#control-panel[data-shown="true"], #add-data-panel[data-shown="true"], #add-events-panel[data-shown="true"]
 {
 	display: block;
 }

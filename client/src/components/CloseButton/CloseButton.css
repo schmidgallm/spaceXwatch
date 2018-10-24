@@ -15,6 +15,10 @@
 	transition: color ease-out 300ms, transform ease-in-out 300ms;
 	transform: translate(150%);
 	overflow: hidden;
+	-webkit-user-select: none;
+    -moz-user-select: none; 
+    -ms-user-select: none; 
+    user-select: none;
 }
 
 .close-button__panelShown

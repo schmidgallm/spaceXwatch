@@ -91,7 +91,7 @@ class App extends Component {
 			<div className="logo">GDV</div>
 			<Modal closeMe={this.closeMe} name={this.state.modalState.name} flightNumber={this.state.modalState.flightNumber} flightYear={this.state.modalState.flightYear} image={this.state.modalState.image} desc={this.state.modalState.desc}  />
 			<Globe user={this.state.user} username={this.state.loginValue} controlPanel={this.state.controlPanel} panelShown={this.state.showLoginPanel} cbProp={this.sendModalState}/>
-			<WelcomeBanner panelShown={this.state.showLoginPanel}/>
+			<WelcomeBanner panelShown={this.state.showLoginPanel} cbProp={this.toggleLoginPanel}/>
 			<LoginButton   panelShown={this.state.showLoginPanel} cbProp={this.toggleLoginPanel} value={this.state.loginValue}/>
 			<TopButton />
 			<CloseButton   panelShown={this.state.showLoginPanel} cbProp={this.toggleLoginPanel}/>
