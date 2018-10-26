@@ -73,7 +73,7 @@ This is the illusion of being in space. basically we create a massive sphere aro
     spacesphere.material.map.wrapT = THREE.RepeatWrapping;
     spacesphere.material.map.repeat.set( 5, 3);
     scene.add(spacesphere);
-    
+
   </code>
 
 <hr>
@@ -83,6 +83,7 @@ This is the illusion of being in space. basically we create a massive sphere aro
 As with the skybox all we do is create sphere then wrap a texutre around it. Only difference between the skybox and earth is the size and type of textures being rendered. There are several images being layed over the earth to give it a sense of 3D depth.
 
 <code>
+
   // incase we want to change images or have muliple in array hold image in variable
   // const mapImg = 'spacex/images/earth/map';
   const mapImg = new THREE.TextureLoader().load('spacex/images/earth/map');
@@ -99,6 +100,7 @@ As with the skybox all we do is create sphere then wrap a texutre around it. Onl
   // material.bumpScale = 0.05;
   material.specularMap = specImg;
   material.specular = new THREE.Color(0x111111);
+  
 </code>
 
 #### image one (map imgage)
