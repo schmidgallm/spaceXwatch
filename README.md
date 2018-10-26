@@ -28,12 +28,6 @@ To start we first need to set up the aspect ratio and camera settings
 <br>
 <code>
 
-    /*
-    // ---------------------------
-    // INIT CAMERA SETTINGS
-    // ---------------------------
-    */
-
     // set width and height of browser
     const width = window.innerWidth - 17;
     const height = window.innerHeight;
@@ -64,24 +58,24 @@ To start we first need to set up the aspect ratio and camera settings
 ### Skybox creation
 This is the illusion of being in space. basically we create a massive sphere around everything with star texture wrapping the inside of it
 <br>
-<code>
-	//Space background is a large sphere
-  var spacetex = THREE.ImageUtils.loadTexture("/spacex/images/newspace");
-  var spacesphereGeo = new THREE.SphereGeometry(50,32,32);
-  var spacesphereMat = new THREE.MeshBasicMaterial();
-  spacesphereMat.map = spacetex;
+  <code>
+    //Space background is a large sphere
+    var spacetex = THREE.ImageUtils.loadTexture("/spacex/images/newspace");
+    var spacesphereGeo = new THREE.SphereGeometry(50,32,32);
+    var spacesphereMat = new THREE.MeshBasicMaterial();
+    spacesphereMat.map = spacetex;
 
-  var spacesphere = new THREE.Mesh(spacesphereGeo,spacesphereMat);
-  
-  //spacesphere needs to be double sided as the camera is within the spacesphere
-  spacesphere.material.side = THREE.DoubleSide;
-  
-  spacesphere.material.map.wrapS = THREE.RepeatWrapping; 
-  spacesphere.material.map.wrapT = THREE.RepeatWrapping;
-  spacesphere.material.map.repeat.set( 5, 3);
-  
-  scene.add(spacesphere);
-</code>
+    var spacesphere = new THREE.Mesh(spacesphereGeo,spacesphereMat);
+    
+    //spacesphere needs to be double sided as the camera is within the spacesphere
+    spacesphere.material.side = THREE.DoubleSide;
+    
+    spacesphere.material.map.wrapS = THREE.RepeatWrapping; 
+    spacesphere.material.map.wrapT = THREE.RepeatWrapping;
+    spacesphere.material.map.repeat.set( 5, 3);
+    
+    scene.add(spacesphere);
+  </code>
 
 <hr>
 
