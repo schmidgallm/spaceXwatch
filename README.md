@@ -64,16 +64,12 @@ This is the illusion of being in space. basically we create a massive sphere aro
     var spacesphereGeo = new THREE.SphereGeometry(50,32,32);
     var spacesphereMat = new THREE.MeshBasicMaterial();
     spacesphereMat.map = spacetex;
-
     var spacesphere = new THREE.Mesh(spacesphereGeo,spacesphereMat);
-    
     //spacesphere needs to be double sided as the camera is within the spacesphere
     spacesphere.material.side = THREE.DoubleSide;
-    
     spacesphere.material.map.wrapS = THREE.RepeatWrapping; 
     spacesphere.material.map.wrapT = THREE.RepeatWrapping;
     spacesphere.material.map.repeat.set( 5, 3);
-    
     scene.add(spacesphere);
   </code>
 
