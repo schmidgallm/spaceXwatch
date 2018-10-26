@@ -28,6 +28,7 @@ For demo we are using an API from SpaceX to plot each place a rocket as taken of
 To start we first need to set up the aspect ratio and camera settings
 <br>
 <code>
+
     // set width and height of browser
     const width = window.innerWidth - 17;
     const height = window.innerHeight;
