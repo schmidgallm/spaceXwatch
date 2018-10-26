@@ -118,6 +118,7 @@ As with the skybox all we do is create sphere then wrap a texutre around it. Onl
 Also along with both skybox and earth, we create a sphere using Three.js then wrap our map texture around it also giving it a bump texture to make it pop
 
 <code>
+
   // init texture map of moon and bump map
   const moonImg = new THREE.TextureLoader().load('spacex/images/moon');
   const moonBumpImg = new THREE.TextureLoader().load('spacex/images/moon/bump');
@@ -131,6 +132,7 @@ Also along with both skybox and earth, we create a sphere using Three.js then wr
   });
   // material.bumpMap = moonBumpImg;
   const moon = new THREE.Mesh(moonGeometry, moonMaterial);
+
 </code>
 
 <hr>
@@ -141,6 +143,7 @@ this is where we plot these objects converting them from lat and long to cartesi
 
 #### first we need to upload data from database 
 <code>
+
   // load rockets function finds the api data and logs it
       // need it here and when rendering lines becuase it will also populate api from databse if no data exists
       const loadRockets = () => {
@@ -160,10 +163,13 @@ this is where we plot these objects converting them from lat and long to cartesi
           });
       }
       loadRockets();
+
 </code>
 
 #### next we can take data and loop through it and plot it
+
 <code>
+
 spaceXData = () => {
 	   API.getLaunches().then(rsp => {
       const gps = rsp.data;
@@ -250,13 +256,16 @@ spaceXData = () => {
 
           // push to global ringArray array so we can access them outside of component did mount function
           ringArray.push(ring);
+
 </code>
 
 <hr>
 
 ## lighting
 in order to use the bump maps and specular maps to full potential we need to add lighting
+
 <code>
+
   // init shadowmaps
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFShadowMap;
@@ -296,6 +305,7 @@ in order to use the bump maps and specular maps to full potential we need to add
   // init hemisphere light (puts a sort of gradient light over scene to give a hint of color in light source)
   var hemisphereLight = new THREE.HemisphereLight(0xffffbb, 0x020251, .02);
   scene.add(hemisphereLight);
+
 </code>
 
 <hr>
@@ -305,7 +315,9 @@ lastly we need set up click events and begin animation of everything
 
 #### click events
 we use rayCaster here to shoot a ray and intersect with object 
+
 <code>
+
   const projector = new THREE.Projector();
   const mouse2D = new THREE.Vector3(0, 10000, 0.5);
   // event listener for each click on object
@@ -358,11 +370,14 @@ we use rayCaster here to shoot a ray and intersect with object
     camera.updateProjectionMatrix();
   });
   }
+
 </code>
 
 #### animation
 notice how all object creation is done a componentDidMount function while the rest utlizes React's other live cycle methods
+
 <code>
+
  // on willunmount this will stop all animations and remove all rendering from dom element
   componentWillUnmount() {
     this.stop()
@@ -402,4 +417,5 @@ notice how all object creation is done a componentDidMount function while the re
   renderScene() {
     this.renderer.render(this.scene, this.camera);
   }
+  
 </code>
