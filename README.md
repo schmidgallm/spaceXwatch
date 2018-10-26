@@ -65,6 +65,7 @@ To start we first need to set up the aspect ratio and camera settings
 This is the illusion of being in space. basically we create a massive sphere around everything with star texture wrapping the inside of it
 <br>
 <code>
+
   /*
   // ---------------------------
   // SKYBOX SPACE CREATION
@@ -87,6 +88,7 @@ This is the illusion of being in space. basically we create a massive sphere aro
   spacesphere.material.map.repeat.set( 5, 3);
   
   scene.add(spacesphere);
+
 </code>
 
 <hr>
@@ -116,11 +118,12 @@ As with the skybox all we do is create sphere then wrap a texutre around it. Onl
 
 #### image one (map imgage)
 <img src="routes/api/map.jpg">
+
 #### image two (bump image -- gives depth and 3D look)
 <img src="routes/api/bump.jpg">
+
 #### image three (specular map -- gives lighting texture to earth)
 <img src="routes/api/specular.png">
-
 
 <hr>
 
@@ -128,6 +131,7 @@ As with the skybox all we do is create sphere then wrap a texutre around it. Onl
 Also along with both skybox and earth, we create a sphere using Three.js then wrap our map texture around it also giving it a bump texture to make it pop
 
 <code>
+
     /*
     // ---------------------------
     // MOON OBJECT CREATION
