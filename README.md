@@ -65,13 +65,6 @@ To start we first need to set up the aspect ratio and camera settings
 This is the illusion of being in space. basically we create a massive sphere around everything with star texture wrapping the inside of it
 <br>
 <code>
-
-  /*
-  // ---------------------------
-  // SKYBOX SPACE CREATION
-  // ---------------------------
-  */
-	
 	//Space background is a large sphere
   var spacetex = THREE.ImageUtils.loadTexture("/spacex/images/newspace");
   var spacesphereGeo = new THREE.SphereGeometry(50,32,32);
@@ -88,7 +81,6 @@ This is the illusion of being in space. basically we create a massive sphere aro
   spacesphere.material.map.repeat.set( 5, 3);
   
   scene.add(spacesphere);
-
 </code>
 
 <hr>
