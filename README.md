@@ -98,22 +98,22 @@ This is the illusion of being in space. basically we create a massive sphere aro
 As with the skybox all we do is create sphere then wrap a texutre around it. Only difference between the skybox and earth is the size and type of textures being rendered. There are several images being layed over the earth to give it a sense of 3D depth.
 
 <code>
-// incase we want to change images or have muliple in array hold image in variable
-    // const mapImg = 'spacex/images/earth/map';
-    const mapImg = new THREE.TextureLoader().load('spacex/images/earth/map');
-    const bumpImg = new THREE.TextureLoader().load('spacex/images/earth/bump');
-    const specImg = new THREE.TextureLoader().load('spacex/images/earth/specular');
-    const canvasCloud = new THREE.TextureLoader().load('spacex/images/earth/cloud');
-    const trans = new THREE.TextureLoader().load('spacex/images/earth/trans');
-    // create sphere geomerty and populate its texture with earth image stored in variable above
-    const geometry = new THREE.SphereGeometry(5, 32, 32);
-    // const texture = new THREE.TextureLoader().load(mapImg);
-    const material = new THREE.MeshPhongMaterial();
-    material.map = mapImg;
-    material.bumpMap = bumpImg;
-    // material.bumpScale = 0.05;
-    material.specularMap = specImg;
-    material.specular = new THREE.Color(0x111111);
+  // incase we want to change images or have muliple in array hold image in variable
+  // const mapImg = 'spacex/images/earth/map';
+  const mapImg = new THREE.TextureLoader().load('spacex/images/earth/map');
+  const bumpImg = new THREE.TextureLoader().load('spacex/images/earth/bump');
+  const specImg = new THREE.TextureLoader().load('spacex/images/earth/specular');
+  const canvasCloud = new THREE.TextureLoader().load('spacex/images/earth/cloud');
+  const trans = new THREE.TextureLoader().load('spacex/images/earth/trans');
+  // create sphere geomerty and populate its texture with earth image stored in variable above
+  const geometry = new THREE.SphereGeometry(5, 32, 32);
+  // const texture = new THREE.TextureLoader().load(mapImg);
+  const material = new THREE.MeshPhongMaterial();
+  material.map = mapImg;
+  material.bumpMap = bumpImg;
+  // material.bumpScale = 0.05;
+  material.specularMap = specImg;
+  material.specular = new THREE.Color(0x111111);
 </code>
 
 #### image one (map imgage)
@@ -131,26 +131,19 @@ As with the skybox all we do is create sphere then wrap a texutre around it. Onl
 Also along with both skybox and earth, we create a sphere using Three.js then wrap our map texture around it also giving it a bump texture to make it pop
 
 <code>
-
-    /*
-    // ---------------------------
-    // MOON OBJECT CREATION
-    // ---------------------------
-    */
-
-    // init texture map of moon and bump map
-    const moonImg = new THREE.TextureLoader().load('spacex/images/moon');
-    const moonBumpImg = new THREE.TextureLoader().load('spacex/images/moon/bump');
-    // init sphere geometry for moon
-    const moonGeometry = new THREE.SphereGeometry(1.5,32,32);
-    // Use mesh phong material so it gives off reflectivity and glow
-    const moonMaterial = new THREE.MeshPhongMaterial({
-      map: moonImg,
-      bumpMap: moonBumpImg,
-      bumpScale: .5
-    });
-    // material.bumpMap = moonBumpImg;
-    const moon = new THREE.Mesh(moonGeometry, moonMaterial);
+  // init texture map of moon and bump map
+  const moonImg = new THREE.TextureLoader().load('spacex/images/moon');
+  const moonBumpImg = new THREE.TextureLoader().load('spacex/images/moon/bump');
+  // init sphere geometry for moon
+  const moonGeometry = new THREE.SphereGeometry(1.5,32,32);
+  // Use mesh phong material so it gives off reflectivity and glow
+  const moonMaterial = new THREE.MeshPhongMaterial({
+    map: moonImg,
+    bumpMap: moonBumpImg,
+    bumpScale: .5
+  });
+  // material.bumpMap = moonBumpImg;
+  const moon = new THREE.Mesh(moonGeometry, moonMaterial);
 </code>
 
 <hr>
@@ -161,25 +154,25 @@ this is where we plot these objects converting them from lat and long to cartesi
 
 #### first we need to upload data from database 
 <code>
-// load rockets function finds the api data and logs it
-    // need it here and when rendering lines becuase it will also populate api from databse if no data exists
-    const loadRockets = () => {
-      API.getLaunches().then(response => {
-          // const gps = response.data;
-          if (response.data.length < 1) {
-            console.log("Didn't find spaceX data so let's add it to the database");
-            API.createGeoDataSet().then(response => {
-              API.addSpaceXData().then(res => {
-                console.log(res);
+  // load rockets function finds the api data and logs it
+      // need it here and when rendering lines becuase it will also populate api from databse if no data exists
+      const loadRockets = () => {
+        API.getLaunches().then(response => {
+            // const gps = response.data;
+            if (response.data.length < 1) {
+              console.log("Didn't find spaceX data so let's add it to the database");
+              API.createGeoDataSet().then(response => {
+                API.addSpaceXData().then(res => {
+                  console.log(res);
+                });
               });
-            });
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    }
-    loadRockets();
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
+      loadRockets();
 </code>
 
 #### next we can take data and loop through it and plot it
@@ -203,8 +196,6 @@ spaceXData = () => {
             linewidth: 1, // cannot change :(
             name: gps[j].name,
           });
-
-
 
           var geometry = new THREE.Geometry();
           geometry.vertices.push(new THREE.Vector3(0, 0, 0));
@@ -279,54 +270,45 @@ spaceXData = () => {
 ## lighting
 in order to use the bump maps and specular maps to full potential we need to add lighting
 <code>
- /*
-    // ---------------------------
-    // INIT LIGHT SOURCE AND SHADOWS
-    // ---------------------------
-    */
+  // init shadowmaps
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFShadowMap;
 
-    console.log(stickArray);
-
-    // init shadowmaps
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFShadowMap;
-
-    // init directional light (mimicks moon light)
-    var dirLight;
-    dirLight = new THREE.DirectionalLight(0xffffff, 2);
-    dirLight.position.set(1, 1, 1).normalize();
-    dirLight.target = sphere;
-    ringArray.forEach(ringObj => {
-      dirLight.target = ringObj;
-    });
-    stickArray.forEach(stickObj => {
-      stickObj.castShadow = true;
-    });
+  // init directional light (mimicks moon light)
+  var dirLight;
+  dirLight = new THREE.DirectionalLight(0xffffff, 2);
+  dirLight.position.set(1, 1, 1).normalize();
+  dirLight.target = sphere;
+  ringArray.forEach(ringObj => {
+    dirLight.target = ringObj;
+  });
+  stickArray.forEach(stickObj => {
+    stickObj.castShadow = true;
+  });
 
 
-    // init shadow controls on dirlight
-    dirLight.castShadow = true;
-    dirLight.shadow = new THREE.LightShadow(new THREE.PerspectiveCamera(100, 1, 500, 1000));
-    dirLight.shadow.bias = 0.001;
-    dirLight.shadow.mapSize.width = 2048 * 2;
-    dirLight.shadow.mapSize.height = 2048 * 2;
+  // init shadow controls on dirlight
+  dirLight.castShadow = true;
+  dirLight.shadow = new THREE.LightShadow(new THREE.PerspectiveCamera(100, 1, 500, 1000));
+  dirLight.shadow.bias = 0.001;
+  dirLight.shadow.mapSize.width = 2048 * 2;
+  dirLight.shadow.mapSize.height = 2048 * 2;
 
-    // add dirlight to scnee
-    scene.add(dirLight);
+  // add dirlight to scnee
+  scene.add(dirLight);
 
-    // set up sphere and rings to allow to cast shadows
-    sphere.castShadow = true;
-    ringArray.forEach(ringObj => {
-      ringObj.castShadow = true;
-    })
-    stickArray.forEach(stickObj => {
-      stickObj.castShadow = true;
-    })
+  // set up sphere and rings to allow to cast shadows
+  sphere.castShadow = true;
+  ringArray.forEach(ringObj => {
+    ringObj.castShadow = true;
+  })
+  stickArray.forEach(stickObj => {
+    stickObj.castShadow = true;
+  })
 
-    // init hemisphere light (puts a sort of gradient light over scene to give a hint of color in light source)
-    var hemisphereLight = new THREE.HemisphereLight(0xffffbb, 0x020251, .02);
-    scene.add(hemisphereLight);
-
+  // init hemisphere light (puts a sort of gradient light over scene to give a hint of color in light source)
+  var hemisphereLight = new THREE.HemisphereLight(0xffffbb, 0x020251, .02);
+  scene.add(hemisphereLight);
 </code>
 
 <hr>
@@ -337,68 +319,60 @@ lastly we need set up click events and begin animation of everything
 #### click events
 we use rayCaster here to shoot a ray and intersect with object 
 <code>
- /*
-    //---------------------------
-    // CLICK EVENTS
-    //---------------------------
-    */
+  const projector = new THREE.Projector();
+  const mouse2D = new THREE.Vector3(0, 10000, 0.5);
+  // event listener for each click on object
+  document.addEventListener('click', onDocumentMouseClick, false);
 
-
-    const projector = new THREE.Projector();
-    const mouse2D = new THREE.Vector3(0, 10000, 0.5);
-    // event listener for each click on object
-    document.addEventListener('click', onDocumentMouseClick, false);
-
-    // handle callback function that updates props on click
-    const handleChangeUserDataLineObject = (name, flightNumber, flightYear, image, desc) => {
-      this.props.cbProp({
-        name: name,
-        flightNumber: flightNumber,
-        flightYear: flightYear,
-        image: image,
-        desc: desc,
-      });
-    }
-
-    function onDocumentMouseClick(event) {
-      // need to prevent any sort of default behavior
-      event.preventDefault();
-      // get the x and y coords of mouse
-      mouse2D.x = (event.clientX / window.innerWidth) * 2 - 1;
-      mouse2D.y = -(event.clientY / window.innerHeight) * 2 + 1;
-      var vector = new THREE.Vector3(mouse2D.x, mouse2D.y, 0.5);
-      projector.unprojectVector(vector, camera);
-      // start the raycaster -- esentially it projects a ray from position of click and see if it intersects with any objects in its path
-      var raycaster = new THREE.Raycaster(camera.position, vector.sub(camera.position).normalize());
-      var intersects = raycaster.intersectObjects(objects);
-      if (intersects.length > 0) {
-        var firstIntersectedObject = intersects[0];
-        // this will give you the first intersected Object if there are multiple.
-        console.log(firstIntersectedObject.object.userData);
-        console.log(firstIntersectedObject.object.userData.name);
-        handleChangeUserDataLineObject(firstIntersectedObject.object.userData.name, firstIntersectedObject.object.userData.flightNumber, firstIntersectedObject.object.userData.flightYear, firstIntersectedObject.object.userData.image, firstIntersectedObject.object.userData.desc);
-      }
-    }
-
-    // on mount append all renderes to domElement which is the canvas
-    this.mount.appendChild(this.renderer.domElement)
-    this.start()
-
-    // init orbit controls. this allows you to pan the object(earth) around
-    OrbitControls = new OrbitControls(this.camera, this.renderer.domElement);
-
-    // listen for resize of browser so earth will always be in correct aspect ratio
-    window.addEventListener('resize', () => {
-      const width = window.innerWidth - 17;
-      const height = window.innerHeight;
-      renderer.setSize(width, height);
-      camera.aspect = width / height;
-      camera.updateProjectionMatrix();
+  // handle callback function that updates props on click
+  const handleChangeUserDataLineObject = (name, flightNumber, flightYear, image, desc) => {
+    this.props.cbProp({
+      name: name,
+      flightNumber: flightNumber,
+      flightYear: flightYear,
+      image: image,
+      desc: desc,
     });
-	
-	
+  }
+
+  function onDocumentMouseClick(event) {
+    // need to prevent any sort of default behavior
+    event.preventDefault();
+    // get the x and y coords of mouse
+    mouse2D.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse2D.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    var vector = new THREE.Vector3(mouse2D.x, mouse2D.y, 0.5);
+    projector.unprojectVector(vector, camera);
+    // start the raycaster -- esentially it projects a ray from position of click and see if it intersects with any objects in its path
+    var raycaster = new THREE.Raycaster(camera.position, vector.sub(camera.position).normalize());
+    var intersects = raycaster.intersectObjects(objects);
+    if (intersects.length > 0) {
+      var firstIntersectedObject = intersects[0];
+      // this will give you the first intersected Object if there are multiple.
+      console.log(firstIntersectedObject.object.userData);
+      console.log(firstIntersectedObject.object.userData.name);
+      handleChangeUserDataLineObject(firstIntersectedObject.object.userData.name, firstIntersectedObject.object.userData.flightNumber, firstIntersectedObject.object.userData.flightYear, firstIntersectedObject.object.userData.image, firstIntersectedObject.object.userData.desc);
+    }
+  }
+
+  // on mount append all renderes to domElement which is the canvas
+  this.mount.appendChild(this.renderer.domElement)
+  this.start()
+
+  // init orbit controls. this allows you to pan the object(earth) around
+  OrbitControls = new OrbitControls(this.camera, this.renderer.domElement);
+
+  // listen for resize of browser so earth will always be in correct aspect ratio
+  window.addEventListener('resize', () => {
+    const width = window.innerWidth - 17;
+    const height = window.innerHeight;
+    renderer.setSize(width, height);
+    camera.aspect = width / height;
+    camera.updateProjectionMatrix();
+  });
   }
 </code>
+
 #### animation
 notice how all object creation is done a componentDidMount function while the rest utlizes React's other live cycle methods
 <code>
